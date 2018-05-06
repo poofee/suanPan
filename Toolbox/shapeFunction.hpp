@@ -4,7 +4,7 @@
  *
  * The function is designed to return the shape function for four- and eight-node quad elements.
  *
- * @author T
+ * @author tlc
  * @date 04/10/2017
  * @version 0.1.2
  * @file shapeFunction.hpp

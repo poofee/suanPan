@@ -18,7 +18,7 @@
  * @class MetaMat
  * @brief A MetaMat class that holds matrices.
  *
- * @author T
+ * @author tlc
  * @date 08/09/2017
  * @version 0.2.0
  * @file MetaMat.hpp

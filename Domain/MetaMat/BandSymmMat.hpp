@@ -18,7 +18,7 @@
  * @class BandSymmMat
  * @brief A BandSymmMat class that holds matrices.
  *
- * @author T
+ * @author tlc
  * @date 06/09/2017
  * @version 0.1.0
  * @file BandSymmMat.hpp

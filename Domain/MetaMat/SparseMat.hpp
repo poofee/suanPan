@@ -18,7 +18,7 @@
  * @class SparseMat
  * @brief A SparseMat class that holds matrices.
  *
- * @author T
+ * @author tlc
  * @date 06/05/2018
  * @version 0.1.0
  * @file SparseMat.hpp

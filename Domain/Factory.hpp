@@ -20,7 +20,7 @@
  *
  * The Factory class.
  *
- * @author T
+ * @author tlc
  * @date 13/09/2017
  * @version 0.1.0
  * @file Factory.hpp
