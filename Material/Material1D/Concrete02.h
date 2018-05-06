@@ -44,7 +44,11 @@
 #include <Material/Material1D/Material1D.h>
 
 class Concrete02 : public Material1D {
+    enum class Status { NONE, CBACKBONE, TBACKBONE, CUNLOAD, TUNLOAD, CRELOAD, TRELOAD, CTRANS, TTRANS };
+
     static const double one_over_six;
+
+    Status load_status = Status::NONE;
 
     const double peak_stress, peak_strain;
 
