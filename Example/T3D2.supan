@@ -1,0 +1,31 @@
+# A TEST MODEL
+
+node 1 0 0 0
+node 2 1 0 0
+node 3 0 1 0
+node 4 -1 0 0
+node 5 0 -1 0
+node 6 0 0 1
+
+material MPF 1 100 300 .4
+
+element T3D2 1 1 6 1 100 1 1 1
+element T3D2 2 2 6 1 100 1 1 1
+element T3D2 3 3 6 1 100 1 1 1
+element T3D2 4 4 6 1 100 1 1 1
+element T3D2 5 5 6 1 100 1 1 1
+
+fix 1 P 1 2 3 4 5
+
+step static 1
+
+cload 1 0 1000 3 6
+
+converger AbsIncreDisp 1 1E-6 10 1
+
+analyze
+
+peek element 5
+peek node 6
+
+exit

@@ -1,0 +1,372 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Parser">
+      <UniqueIdentifier>{92394c5f-c204-4173-a50c-16c2b4503795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="SRC">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Step">
+      <UniqueIdentifier>{308cbd22-45b8-4deb-a037-369f425554ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Constraint">
+      <UniqueIdentifier>{a4d94c0a-b935-4d80-a90f-9578d34deccf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Load">
+      <UniqueIdentifier>{b8e813cb-4844-4eea-a965-bfa7df549659}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Recorder">
+      <UniqueIdentifier>{22f35a9a-d03e-4873-a8f7-e4f09f9e3a42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{4a7ce469-3e81-4f9e-9823-e92d2d66e0a7}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Domain\Domain.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Domain\Node.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Domain\Tag.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\tensorToolbox.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Domain\ExternalModule.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\debug.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Bead.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\commandParser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\argumentParser.cpp">
+      <Filter>Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Database\Database.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Database\SQL.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Database\HDF.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\utility.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\RCM.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Domain\DomainBase.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Dynamic.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Frequence.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Static.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Step.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\BC\BC.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\Constraint.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\MPC.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\Tie.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\CLoad.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Amplitude.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Ramp.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Tabular.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Load.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\IntegrationPlan.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Recorder\NodeRecorder.cpp">
+      <Filter>Recorder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Recorder\Recorder.cpp">
+      <Filter>Recorder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\ArcLength.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\Criterion\Criterion.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\Criterion\MaxDisplacement.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Constraint\Criterion\MinDisplacement.cpp">
+      <Filter>Constraint</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Toolbox\arpack_wrapper.cpp">
+      <Filter>SRC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Displacement.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Acceleration.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Step\Buckle.cpp">
+      <Filter>Step</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Recorder\OutputType.cpp">
+      <Filter>Recorder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Recorder\ElementRecorder.cpp">
+      <Filter>Recorder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Modulated.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Decay.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Sine.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Load\Amplitude\Cosine.cpp">
+      <Filter>Load</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\suanPan.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Toolbox\tensorToolbox.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\Node.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\Tag.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\Domain.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\debug.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\commandParser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\argumentParser.h">
+      <Filter>Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\RCM.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\shapeFunction.hpp">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\DomainBase.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Dynamic.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Frequence.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Static.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Step.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\BC\BC.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\Constraint.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\MPC.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\Tie.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\CLoad.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Amplitude.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Ramp.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Tabular.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Load.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Bead.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Database\Database.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\ExternalModule.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Database\HDF.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\PropertyType.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Database\SQL.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\utility.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\ClassTag.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\suanPan.h">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\IntegrationPlan.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Recorder\NodeRecorder.h">
+      <Filter>Recorder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Recorder\Recorder.h">
+      <Filter>Recorder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\ArcLength.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\Criterion\Criterion.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\Criterion\MaxDisplacement.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Constraint\Criterion\MinDisplacement.h">
+      <Filter>Constraint</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Toolbox\arpack_wrapper.h">
+      <Filter>SRC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Displacement.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Acceleration.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Step\Buckle.h">
+      <Filter>Step</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Recorder\OutputType.h">
+      <Filter>Recorder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Recorder\ElementRecorder.h">
+      <Filter>Recorder</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Modulated.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Decay.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Cosine.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Load\Amplitude\Sine.h">
+      <Filter>Load</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Resource\resource.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\BandMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\BandSymmMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\FullMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\MetaMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\operator_times.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\SymmPackMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\SparseMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\comparator.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\csc_form.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\csr_form.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\sparse_form.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\triplet_form.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Resource\icon1.ico">
+      <Filter>Resource</Filter>
+    </Image>
+    <Image Include="..\..\..\Resource\icon2.ico">
+      <Filter>Resource</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\Resource\suanPan.rc">
+      <Filter>Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

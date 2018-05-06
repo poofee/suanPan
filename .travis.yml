@@ -1,0 +1,68 @@
+language: cpp
+compiler: gcc
+os: linux
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - g++-6
+      - gfortran-6
+rust:
+  - nightly
+script:
+  - export CC=gcc-6
+  - export CXX=g++-6
+  - export FC=gfortran-6
+  - mkdir cmake-build && cd cmake-build
+  - cmake -DCMAKE_BUILD_TYPE=Debug -DTEST_COVERAGE=ON -DUSE_HDF5=ON ../
+  - make -j4
+after_success:
+  - ./suanPan -f ../Example/B21.supan > /dev/null
+  - ./suanPan -f ../Example/B21H.supan > /dev/null
+  - ./suanPan -f ../Example/BEGINNER.supan > /dev/null
+  - ./suanPan -f ../Example/C3D20.supan > /dev/null
+  - ./suanPan -f ../Example/C3D8.supan > /dev/null
+  - ./suanPan -f ../Example/CDP.supan > /dev/null
+  - ./suanPan -f ../Example/CDPM2.supan > /dev/null
+  - ./suanPan -f ../Example/CDPPS.supan > /dev/null
+  - ./suanPan -f ../Example/CONCRETE01.supan > /dev/null
+  - ./suanPan -f ../Example/COOK1.supan > /dev/null
+  - ./suanPan -f ../Example/COOK2.supan > /dev/null
+  - ./suanPan -f ../Example/COOK4.supan > /dev/null
+  - ./suanPan -f ../Example/CP6.supan > /dev/null
+  - ./suanPan -f ../Example/CP8.supan > /dev/null
+  - ./suanPan -f ../Example/CPS3.supan > /dev/null
+  - ./suanPan -f ../Example/CPS4L.supan > /dev/null
+  - ./suanPan -f ../Example/CPS4N50.supan > /dev/null
+  - ./suanPan -f ../Example/CPS4NL.supan > /dev/null
+  - ./suanPan -f ../Example/CPS8.supan > /dev/null
+  - ./suanPan -f ../Example/CURVEDBEAM.supan > /dev/null
+  - ./suanPan -f ../Example/DAMPER01.supan > /dev/null
+  - ./suanPan -f ../Example/DC.supan > /dev/null
+  - ./suanPan -f ../Example/DISTORTION.supan > /dev/null
+  - ./suanPan -f ../Example/DYNAMIC.supan > /dev/null
+  - ./suanPan -f ../Example/EB21.supan > /dev/null
+  - ./suanPan -f ../Example/EXTERNAL.LIB.supan > /dev/null
+  - ./suanPan -f ../Example/F21.supan > /dev/null
+  - ./suanPan -f ../Example/F21H.supan > /dev/null
+  - ./suanPan -f ../Example/GCMQ.supan > /dev/null
+  - ./suanPan -f ../Example/GQ12.supan > /dev/null
+  - ./suanPan -f ../Example/IREGULARBEAM.supan > /dev/null
+  - ./suanPan -f ../Example/LEE.FRAME.supan > /dev/null
+  - ./suanPan -f ../Example/MACNEAL.supan > /dev/null
+  - ./suanPan -f ../Example/MATERIAL1D.supan > /dev/null
+  - ./suanPan -f ../Example/PATCH.supan > /dev/null
+  - ./suanPan -f ../Example/PS.supan > /dev/null
+  - ./suanPan -f ../Example/QE2.supan > /dev/null
+  - ./suanPan -f ../Example/RCP4.supan > /dev/null
+  - ./suanPan -f ../Example/RL.supan > /dev/null
+  - ./suanPan -f ../Example/SHALLOW.ARC.supan > /dev/null
+  - ./suanPan -f ../Example/SINGLESECTION.supan > /dev/null
+  - ./suanPan -f ../Example/TESTMATERIAL.supan > /dev/null
+  - ./suanPan -f ../Example/TRUSS2D.supan > /dev/null
+  - ./suanPan -f ../Example/T3D2.supan > /dev/null
+  - for SRC in `find . | egrep '\.o'`; do gcov-6 -n $SRC > /dev/null; done
+  - bash < (curl -s https://codecov.io/bash)
+notifications:
+  email: false

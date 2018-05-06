@@ -1,0 +1,29 @@
+node 1 0 0
+node 2 1 0
+node 3 1 1
+node 4 0 1
+
+material CDPPS 1 3E4 .2 4. 40. 2E-3 4E-1 .2 4. .4 .8 .2 1.16 .2 2400E-12
+# material Bilinear2D 1 3E4 .2 30 .02
+
+element QE2 1 1 2 3 4 1 1
+
+fix 1 1 1
+fix 2 2 1 2
+
+displacement 1 0 -3E-2 2 3 4
+
+hdf5recorder 1 Node RF 3 4
+
+step static 1 1
+set fixed_step_size 1
+set ini_step_size 1E-2
+set symm_mat false
+
+converger AbsIncreDisp 1 1E-8 20 1
+
+analyze
+
+save recorder 1
+
+exit

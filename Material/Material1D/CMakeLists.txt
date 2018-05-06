@@ -1,0 +1,14 @@
+set(M1D
+    Material1D/Bilinear1D.cpp
+    Material1D/Concrete01.cpp
+    Material1D/Concrete02.cpp
+    Material1D/Elastic1D.cpp
+    Material1D/Gap01.cpp
+    Material1D/Material1D.cpp
+    Material1D/Maxwell.cpp
+    Material1D/MPF.cpp
+    Material1D/RambergOsgood.cpp
+    Material1D/Tester1D.cpp
+    Material1D/Viscosity1D.cpp
+    Material1D/BilinearElastic1D.cpp
+	)

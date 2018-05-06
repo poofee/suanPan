@@ -1,0 +1,9 @@
+name: suanpan
+version: "0.1 beta"
+summary: a open source fem framework
+description: a open source fem framework
+grade: devel
+confinement: strict
+app:
+  suanpan:
+    command: suanpan

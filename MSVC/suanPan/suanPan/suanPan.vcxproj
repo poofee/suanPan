@@ -1,0 +1,360 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-GPU|Win32">
+      <Configuration>Release-GPU</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release-GPU|x64">
+      <Configuration>Release-GPU</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{DFE098B0-CE36-42BC-AB34-3C7146543F57}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>suanPan</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>../../$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>../../$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>SUANPAN_HDF5;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../../..;../../../Include;../../../Include/armadillo;../../../Include/hdf5-vs;../../../Include/hdf5-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OpenMPSupport>false</OpenMPSupport>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <AdditionalLibraryDirectories>../../../Libs/vs/;../../$(Configuration)/Libs/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Solver.lib;Section.lib;Element.lib;Converger.lib;Material.lib;superlu.lib;arpack.lib;spmm.lib;openblas.lib;hdf5_hl.lib;hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:LIBCMT /NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>SUANPAN_MT;SUANPAN_HDF5;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(CUDA_PATH)/include;../../..;../../../Include;../../../Include/armadillo;../../../Include/hdf5-vs;../../../Include/hdf5-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <OpenMPSupport>false</OpenMPSupport>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../../Libs/vs/;../../$(Configuration)/Libs/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Solver.lib;Section.lib;Element.lib;Converger.lib;Material.lib;superlu.lib;arpack.lib;spmm.lib;openblas.lib;hdf5_hl.lib;hdf5.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>SUANPAN_MT;SUANPAN_HDF5;SUANPAN_MAGMA;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(CUDA_PATH)/include;../../..;../../../Include;../../../Include/magma;../../../Include/armadillo;../../../Include/hdf5-vs;../../../Include/hdf5-common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions</EnableEnhancedInstructionSet>
+      <OpenMPSupport>false</OpenMPSupport>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp14</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>../../../Libs/vs/;../../$(Configuration)/Libs/;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Solver.lib;Section.lib;Element.lib;Converger.lib;Material.lib;magma.lib;superlu.lib;arpack.lib;spmm.lib;openblas.lib;hdf5_hl.lib;hdf5.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cublas.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cublas_device.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cudart.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cudart_static.lib;C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v9.1\lib\x64\cusparse.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalOptions>/NODEFAULTLIB:MSVCRT %(AdditionalOptions)</AdditionalOptions>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Constraint\BC\BC.cpp" />
+    <ClCompile Include="..\..\..\Constraint\Constraint.cpp" />
+    <ClCompile Include="..\..\..\Constraint\Criterion\Criterion.cpp" />
+    <ClCompile Include="..\..\..\Constraint\Criterion\MaxDisplacement.cpp" />
+    <ClCompile Include="..\..\..\Constraint\Criterion\MinDisplacement.cpp" />
+    <ClCompile Include="..\..\..\Constraint\MPC.cpp" />
+    <ClCompile Include="..\..\..\Constraint\Tie.cpp" />
+    <ClCompile Include="..\..\..\Database\Database.cpp" />
+    <ClCompile Include="..\..\..\Database\HDF.cpp" />
+    <ClCompile Include="..\..\..\Database\SQL.cpp" />
+    <ClCompile Include="..\..\..\Domain\Domain.cpp" />
+    <ClCompile Include="..\..\..\Domain\DomainBase.cpp" />
+    <ClCompile Include="..\..\..\Domain\ExternalModule.cpp" />
+    <ClCompile Include="..\..\..\Domain\Node.cpp" />
+    <ClCompile Include="..\..\..\Domain\Tag.cpp" />
+    <ClCompile Include="..\..\..\Load\Acceleration.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Amplitude.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Cosine.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Decay.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Modulated.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Ramp.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Sine.cpp" />
+    <ClCompile Include="..\..\..\Load\Amplitude\Tabular.cpp" />
+    <ClCompile Include="..\..\..\Load\CLoad.cpp" />
+    <ClCompile Include="..\..\..\Load\Displacement.cpp" />
+    <ClCompile Include="..\..\..\Load\Load.cpp" />
+    <ClCompile Include="..\..\..\Recorder\ElementRecorder.cpp" />
+    <ClCompile Include="..\..\..\Recorder\NodeRecorder.cpp" />
+    <ClCompile Include="..\..\..\Recorder\OutputType.cpp" />
+    <ClCompile Include="..\..\..\Recorder\Recorder.cpp" />
+    <ClCompile Include="..\..\..\Step\ArcLength.cpp" />
+    <ClCompile Include="..\..\..\Step\Bead.cpp" />
+    <ClCompile Include="..\..\..\Step\Buckle.cpp" />
+    <ClCompile Include="..\..\..\Step\Dynamic.cpp" />
+    <ClCompile Include="..\..\..\Step\Frequence.cpp" />
+    <ClCompile Include="..\..\..\Step\Static.cpp" />
+    <ClCompile Include="..\..\..\Step\Step.cpp" />
+    <ClCompile Include="..\..\..\suanPan.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\argumentParser.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\arpack_wrapper.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\commandParser.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\debug.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\IntegrationPlan.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\RCM.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\tensorToolbox.cpp" />
+    <ClCompile Include="..\..\..\Toolbox\utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Constraint\BC\BC.h" />
+    <ClInclude Include="..\..\..\Constraint\Constraint.h" />
+    <ClInclude Include="..\..\..\Constraint\Criterion\Criterion.h" />
+    <ClInclude Include="..\..\..\Constraint\Criterion\MaxDisplacement.h" />
+    <ClInclude Include="..\..\..\Constraint\Criterion\MinDisplacement.h" />
+    <ClInclude Include="..\..\..\Constraint\MPC.h" />
+    <ClInclude Include="..\..\..\Constraint\Tie.h" />
+    <ClInclude Include="..\..\..\Database\Database.h" />
+    <ClInclude Include="..\..\..\Database\HDF.h" />
+    <ClInclude Include="..\..\..\Database\SQL.h" />
+    <ClInclude Include="..\..\..\Domain\Domain.h" />
+    <ClInclude Include="..\..\..\Domain\DomainBase.h" />
+    <ClInclude Include="..\..\..\Domain\ExternalModule.h" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\BandMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\BandSymmMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\comparator.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\csc_form.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\csr_form.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\FullMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\MetaMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\operator_times.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\SparseMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\sparse_form.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\SymmPackMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\triplet_form.hpp" />
+    <ClInclude Include="..\..\..\Domain\Node.h" />
+    <ClInclude Include="..\..\..\Domain\Tag.h" />
+    <ClInclude Include="..\..\..\Load\Acceleration.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Amplitude.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Cosine.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Decay.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Modulated.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Ramp.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Sine.h" />
+    <ClInclude Include="..\..\..\Load\Amplitude\Tabular.h" />
+    <ClInclude Include="..\..\..\Load\CLoad.h" />
+    <ClInclude Include="..\..\..\Load\Displacement.h" />
+    <ClInclude Include="..\..\..\Load\Load.h" />
+    <ClInclude Include="..\..\..\Recorder\ElementRecorder.h" />
+    <ClInclude Include="..\..\..\Recorder\NodeRecorder.h" />
+    <ClInclude Include="..\..\..\Recorder\OutputType.h" />
+    <ClInclude Include="..\..\..\Recorder\Recorder.h" />
+    <ClInclude Include="..\..\..\Resource\resource.h" />
+    <ClInclude Include="..\..\..\Step\ArcLength.h" />
+    <ClInclude Include="..\..\..\Step\Bead.h" />
+    <ClInclude Include="..\..\..\Step\Buckle.h" />
+    <ClInclude Include="..\..\..\Step\Dynamic.h" />
+    <ClInclude Include="..\..\..\Step\Frequence.h" />
+    <ClInclude Include="..\..\..\Step\Static.h" />
+    <ClInclude Include="..\..\..\Step\Step.h" />
+    <ClInclude Include="..\..\..\suanPan.h" />
+    <ClInclude Include="..\..\..\Toolbox\argumentParser.h" />
+    <ClInclude Include="..\..\..\Toolbox\arpack_wrapper.h" />
+    <ClInclude Include="..\..\..\Toolbox\ClassTag.h" />
+    <ClInclude Include="..\..\..\Toolbox\commandParser.h" />
+    <ClInclude Include="..\..\..\Toolbox\debug.h" />
+    <ClInclude Include="..\..\..\Toolbox\IntegrationPlan.h" />
+    <ClInclude Include="..\..\..\Toolbox\PropertyType.h" />
+    <ClInclude Include="..\..\..\Toolbox\RCM.h" />
+    <ClInclude Include="..\..\..\Toolbox\shapeFunction.hpp" />
+    <ClInclude Include="..\..\..\Toolbox\tensorToolbox.h" />
+    <ClInclude Include="..\..\..\Toolbox\utility.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\..\Resource\icon1.ico" />
+    <Image Include="..\..\..\Resource\icon2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\..\Resource\suanPan.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,57 @@
+\documentclass[5p]{elsarticle}
+\usepackage{mathpazo,amsmath,amsfonts,amssymb,siunitx}
+\bibliographystyle{elsarticle-num-names}
+\newcommand*{\md}[1]{\mathrm{d}#1}
+\newcommand*{\mT}{\mathrm{T}}
+\newcommand*{\eqsref}[1]{Eq.~(\ref{#1})}
+\newcommand*{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand*{\pdfrac}[2]{\dfrac{\partial#1}{\partial#2}}
+\newcommand*{\ddfrac}[2]{\dfrac{\md#1}{\md#2}}
+\newdefinition{rmk}{Remark}
+\ead{lei.zhang@pg.canterbury.ac.nz}
+\begin{document}
+\section{Stiffness}
+The stress updating gives
+\begin{gather}
+\sigma=\left(1-d\right)\bar{\sigma}=\left(1-d\right)E\left(\varepsilon-\varepsilon^p\right).
+\end{gather}
+
+For effective part,
+\begin{gather}
+E^{-1}\md{\bar{\sigma}}=\md{\varepsilon}-\md{\varepsilon^p},
+\end{gather}
+
+Since $\varepsilon^p=\Delta\lambda\cdot{}m$, then
+\begin{gather}
+E^{-1}\md{\bar{\sigma}}=\md{\varepsilon}-m\md{\Delta\lambda}-\Delta\lambda\md{m},
+\end{gather}
+
+Further, as $m$ is a function of $\bar{\sigma}_v$, $\bar{\rho}$ and $\kappa_p$, then
+\begin{gather}
+\md{m}=\begin{bmatrix}
+\pdfrac{m}{\bar{\sigma}_v}&\pdfrac{m}{\bar{\rho}}&\pdfrac{m}{\kappa_p}
+\end{bmatrix}\begin{bmatrix}
+\md{\bar{\sigma}_v}\\\md{\bar{\rho}}\\\md{\kappa_p}
+\end{bmatrix}.
+\end{gather}
+It can be expressed explicitly as
+\begin{gather}
+m=\pdfrac{g}{\bar{\sigma}_v}\ddfrac{\bar{\sigma}_v}{\bar{\sigma}}+\pdfrac{g}{\bar{\rho}}\ddfrac{\bar{\rho}}{\bar{\sigma}}=\pdfrac{g}{\bar{\sigma}_v}\dfrac{I}{3}+\pdfrac{g}{\bar{\rho}}\dfrac{\bar{s}}{\bar{\rho}},
+\end{gather}
+by denoting $\bar{s}/\bar{\rho}$ as $\bar{n}$ and noting that $\bar{n}$ is only a function of the lode angle, thus the derivatives can be written as
+\begin{gather}
+\pdfrac{m}{\bar{\sigma}_v}=\pdfrac{^2g}{\bar{\sigma}_v^2}\dfrac{I}{3}+\pdfrac{^2g}{\bar{\rho}\partial\bar{\sigma}_v}\bar{n},\\
+\pdfrac{m}{\bar{\rho}}=\pdfrac{^2g}{\bar{\sigma}_v\partial\bar{\rho}}\dfrac{I}{3}+\pdfrac{^2g}{\bar{\rho}^2}\bar{n},\\
+\pdfrac{m}{\kappa_p}=\pdfrac{^2g}{\bar{\sigma}_v\partial\kappa_p}\dfrac{I}{3}+\pdfrac{^2g}{\bar{\rho}\partial\kappa_p}\bar{n}.
+\end{gather}
+
+So, the stress is
+\begin{gather}
+E^{-1}\md{\bar{\sigma}}=\md{\varepsilon}-
+\begin{bmatrix}
+\Delta\lambda\pdfrac{m}{\bar{\sigma}_v}\\\Delta\lambda\pdfrac{m}{\bar{\rho}}\\\Delta\lambda\pdfrac{m}{\kappa_p}\\m
+\end{bmatrix}\begin{bmatrix}
+\md{\bar{\sigma}_v}\\\md{\bar{\rho}}\\\md{\kappa_p}\\\md{\Delta\lambda}
+\end{bmatrix}.
+\end{gather}
+\end{document}

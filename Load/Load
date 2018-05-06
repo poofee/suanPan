@@ -1,0 +1,6 @@
+#include "Amplitude/Amplitude"
+
+#include "Acceleration.h"
+#include "CLoad.h"
+#include "Displacement.h"
+#include "Load.h"

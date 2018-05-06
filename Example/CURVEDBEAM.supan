@@ -1,0 +1,30 @@
+node      1          10.           0.
+node      2          15.           0.
+node      3   9.23879528   3.82683444
+node      4   13.8581934   5.74025154
+node      5   7.07106781   7.07106781
+node      6   10.6066017   10.6066017
+node      7   3.82683444   9.23879528
+node      8   5.74025154   13.8581934
+node      9           0.          10.
+node     10           0.          15.
+
+material Elastic2D 1 1000 0.
+
+element GQ12 1 1 2 4 3 1 1 G
+element GQ12 2 3 4 6 5 1 1 G
+element GQ12 3 5 6 8 7 1 1 G
+element GQ12 4 7 8 10 9 1 1 G
+
+fix 1 P 1 2
+
+cload 1 0 300 2 9 10
+
+step static 1
+
+analyze
+
+peek node 9 10
+# peek element 1 2
+
+exit

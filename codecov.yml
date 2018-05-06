@@ -1,0 +1,8 @@
+ignore:
+  - "/Toolbox/arpack-src"
+  - "/Toolbox/blas-src"
+  - "/Toolbox/lapack-etc"
+  - "/Toolbox/lapack-src"
+  - "/Toolbox/superlu-src"
+  - "/Include"
+  - "/MSVC"

@@ -1,0 +1,264 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Base">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Membrane">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Truss">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Cube">
+      <UniqueIdentifier>{33b9a486-b7d8-42c7-84ec-96b32a9b6b7b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Beam">
+      <UniqueIdentifier>{580a6752-6e34-4ac5-bc48-5ac90ca7cb6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Special">
+      <UniqueIdentifier>{b0cb6ad3-7064-4d04-bd0a-f7d4e9908ede}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{e3413b71-2678-415e-b511-b493172fa40b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Plate">
+      <UniqueIdentifier>{aa3ab194-97fb-4ebf-a713-9b0427753970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shell">
+      <UniqueIdentifier>{3cfab7c3-e4b1-4bfe-b789-0f9a3809e86e}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Element\ElementTemplate.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Element.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\CP3.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\CP4.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\QE2.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\PS.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\GQ12.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Cube\C3D8.cpp">
+      <Filter>Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\ElementParser.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\CP8.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Cube\C3D20.cpp">
+      <Filter>Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\MVLEM.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Special\Mass.cpp">
+      <Filter>Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\B21.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\F21.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\F21H.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Truss\T2D2.cpp">
+      <Filter>Truss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Truss\T3D2.cpp">
+      <Filter>Truss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\B21H.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Special\Spring01.cpp">
+      <Filter>Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Special\SingleSection.cpp">
+      <Filter>Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Special\Damper01.cpp">
+      <Filter>Special</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\CP6.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Utility\MatrixModifier.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\SectionElement.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\MaterialElement.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Beam\EB21.cpp">
+      <Filter>Beam</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\GCMQ.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\RebarLayer.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\RGCMQ.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Plate\Mindlin.cpp">
+      <Filter>Plate</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Shell\RGCMS.cpp">
+      <Filter>Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\GCMT.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Shell\S4.cpp">
+      <Filter>Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Shell\S3.cpp">
+      <Filter>Shell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\Membrane\RCP4.cpp">
+      <Filter>Membrane</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\Element\ElementBase.cpp">
+      <Filter>Base</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Element\Cube\C3D8.h">
+      <Filter>Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\ElementTemplate.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Element.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\CP3.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\CP4.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\GQ12.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\PS.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\QE2.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\ElementParser.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\ElementTag.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\CP8.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Cube\C3D20.h">
+      <Filter>Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\MVLEM.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Special\Mass.h">
+      <Filter>Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\B21.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\F21.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\F21H.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Truss\T2D2.h">
+      <Filter>Truss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Truss\T3D2.h">
+      <Filter>Truss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\B21H.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Special\Spring01.h">
+      <Filter>Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Special\SingleSection.h">
+      <Filter>Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Special\Damper01.h">
+      <Filter>Special</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\CP6.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Utility\MatrixModifier.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\SectionElement.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\MaterialElement.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Beam\EB21.h">
+      <Filter>Beam</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\GCMQ.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\RebarLayer.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\RGCMQ.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Plate\Mindlin.h">
+      <Filter>Plate</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Shell\RGCMS.h">
+      <Filter>Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\GCMT.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Shell\S4.h">
+      <Filter>Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Shell\S3.h">
+      <Filter>Shell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\Membrane\RCP4.h">
+      <Filter>Membrane</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Element\ElementBase.h">
+      <Filter>Base</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

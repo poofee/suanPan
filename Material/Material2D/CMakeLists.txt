@@ -1,0 +1,12 @@
+set(M2D
+    Material2D/Bilinear2D.cpp
+    Material2D/Concrete21.cpp
+    Material2D/Concrete22.cpp
+    Material2D/Elastic2D.cpp
+    Material2D/Material2D.cpp
+    Material2D/PlaneStrain.cpp
+    Material2D/PlaneStress.cpp
+    Material2D/RC01.cpp
+    Material2D/Rebar2D.cpp
+    Material2D/CDPPS.cpp
+    )

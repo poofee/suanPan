@@ -1,0 +1,292 @@
+\documentclass[5p]{elsarticle}
+\usepackage{mathpazo,amsmath,amsfonts,amssymb,siunitx}
+\bibliographystyle{elsarticle-num-names}
+\newcommand*{\md}[1]{\mathrm{d}#1}
+\newcommand*{\mT}{\mathrm{T}}
+\newcommand*{\eqsref}[1]{Eq.~(\ref{#1})}
+\newcommand*{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand*{\pdfrac}[2]{\dfrac{\partial#1}{\partial#2}}
+\newcommand*{\ddfrac}[2]{\dfrac{\md#1}{\md#2}}
+\newdefinition{rmk}{Remark}
+\ead{lei.zhang@pg.canterbury.ac.nz}
+\begin{document}
+\section{Basis}
+The stress $\sigma$ can be decomposed into two part,
+\begin{gather*}
+\sigma=\left(1-d\right)\bar{\sigma}=\left(1-d\right)E\left(\varepsilon-\varepsilon^p\right).
+\end{gather*}
+The damage factor $d$ controls the degradation part and the effective stress $\bar{\sigma}$ represents the plasticity part thus can be expressed as $E\left(\varepsilon-\varepsilon^p\right)$.
+
+For a typical iteration, the current strain $\varepsilon_n$ and current plastic strain $\varepsilon^p_n$ are known, it is asked to solve for the new stress estimation for a given strain increment $\Delta\varepsilon$. So it is legal to write
+\begin{equation}
+\begin{split}
+\bar{\sigma}_{n+1}&=E\left(\varepsilon_{n+1}-\varepsilon_{n+1}^p\right)\\&=E\left(\varepsilon_{n}+\Delta\varepsilon-\varepsilon_n^p-\Delta\varepsilon^p\right)\\&=\sigma^{tr}-\Delta\sigma,
+\end{split}
+\end{equation}
+with $\sigma^{tr}=E\left(\varepsilon_{n+1}-\varepsilon_n^p\right)$ is a fixed term for a given iteration and is called the elastic predictor. Furthermore, by decomposing the increment of plastic strain $\Delta\varepsilon^p$ into spherical and deviatoric part, the stress corrector $\Delta\sigma$ can be expressed as
+\begin{gather*}
+\Delta\sigma=E\Delta\varepsilon^p=2G\Delta{}e^p+K\Delta\theta^pI,
+\end{gather*}
+in which $G$ is the shear modulus, $K$ is the bulk modulus, $I$ is the second order unit tensor, $e^p$ is the deviatoric plastic strain and $\theta^p$ is the volumetric plastic strain.
+
+Additionally, with the assist of the flow rule used,
+\begin{gather*}
+\Delta{}e^p=\dfrac{\bar{s}}{\norm{\bar{s}}}\Delta\lambda,\qquad
+\dfrac{\Delta\theta^p}{3}=\alpha_p\Delta\lambda,
+\end{gather*}
+and $\Delta\lambda$ is the increment of the consistency parameter.
+
+Similarly, the effective stress can also be decomposed into spherical and deviatoric part, that is
+\begin{gather*}
+\bar{s}+\dfrac{\bar{I}_1}{3}I=s^{tr}+\dfrac{I_1^{tr}}{3}I-\Delta\lambda\left(2G\dfrac{\bar{s}}{\norm{\bar{s}}}+3K\alpha_pI\right),
+\end{gather*}
+correspondingly,
+\begin{gather*}
+\bar{s}=s^{tr}-2G\dfrac{\bar{s}}{\norm{\bar{s}}}\Delta\lambda,\qquad
+\bar{I}_1=I_1^{tr}-9K\alpha_p\Delta\lambda,
+\end{gather*}
+where $I_1$ is the first invariant of the stress tensor.
+
+Computing the norm of the deviatoric part gives
+\begin{gather*}
+\norm{\bar{s}}=\norm{s^{tr}}-2G\Delta\lambda.
+\end{gather*}
+The above equations holds because that $\bar{s}$ and $\dfrac{\bar{s}}{\norm{\bar{s}}}$ are of the same direction, hence the norm is simply the summation of two components. Substituting it back gives
+\begin{gather*}
+\dfrac{\bar{s}}{\norm{\bar{s}}}=\dfrac{s^{tr}}{\norm{s^{tr}}}.
+\end{gather*}
+This simply means the $\bar{s}$ and $s^{tr}$ are of the same direction. By denoting it and its counterpart in eigen space as
+\begin{gather*}
+n=\dfrac{\bar{s}}{\norm{\bar{s}}}=\dfrac{s^{tr}}{\norm{s^{tr}}},\qquad{}\hat{n}=\dfrac{\hat{\bar{s}}}{\norm{\hat{\bar{s}}}}=\dfrac{\hat{s}^{tr}}{\norm{\hat{s}^{tr}}},
+\end{gather*}
+the effective deviatoric stress only depends on $\Delta\lambda$,
+\begin{gather*}
+\bar{s}=s^{tr}-2Gn\Delta\lambda.
+\end{gather*}
+
+In eigen space, the principal effective stress can be expressed as
+\begin{gather*}
+\hat{\bar{\sigma}}=\hat{\sigma}^{tr}-\Delta\lambda\left(2G\hat{n}+3K\alpha_pI\right).
+\end{gather*}
+Its derivative simply reads
+\begin{gather}
+\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}=-\left(2G\hat{n}+3K\alpha_pI\right),
+\end{gather}
+which is a constant due to that $\hat{n}$ does not change.
+\section{Flow Rule}
+The flow rule used is a Drucker--Prager type function that defines the relationship between plastic strain and consistency parameter,
+\begin{gather*}
+\Delta\varepsilon^p=\Delta\lambda\ddfrac{G}{\bar{\sigma}}=\Delta\lambda\nabla{}G.
+\end{gather*}
+The function $G$ is chosen to be
+\begin{gather*}
+G=\sqrt{2\bar{J}_2}+\alpha_p\bar{I}_1.
+\end{gather*}
+Thus the plastic strain is expressed as
+\begin{gather*}
+\Delta\varepsilon^p=\Delta\lambda\left(n+\alpha_pI\right),
+\end{gather*}
+or in eigen space,
+\begin{gather*}
+\Delta\hat{\varepsilon}^p=\Delta\lambda\left(\hat{n}+\alpha_pI\right).
+\end{gather*}
+
+The second order derivative of $G$ is
+\begin{gather}
+\nabla^2G=\dfrac{I^d-n\otimes{}n}{\norm{\bar{s}}}.
+\end{gather}
+\section{Yield Function}
+The yield function is chosen as
+\begin{gather*}
+F=\alpha\bar{I}_1+\sqrt{3\bar{J}_2}+\beta\left<\hat{\bar{\sigma}}_1\right>-\left(1-\alpha\right)c_c,
+\end{gather*}
+with
+\begin{gather*}
+\beta=\dfrac{c_c}{c_t}\left(1-\alpha\right)-\left(1+\alpha\right),
+\end{gather*}
+and
+\begin{gather*}
+c_c=-\bar{f}_c,\qquad{}c_t=\bar{f}_t.
+\end{gather*}
+Inserting those terms into the yield function leads to
+\begin{gather*}
+F=\alpha\bar{I}_1+\sqrt{3\bar{J}_2}+\beta\left<\hat{\bar{\sigma}}_1\right>+\left(1-\alpha\right)\bar{f}_c,\\\beta=-\dfrac{\bar{f}_c}{\bar{f}_t}\left(1-\alpha\right)-\left(1+\alpha\right).
+\end{gather*}
+
+Taking the derivatives gives
+\begin{gather*}
+\pdfrac{F}{\hat{\bar{\sigma}}}=\alpha{}I+\sqrt{\dfrac{3}{2}}\hat{n}+\beta{}H\left(\hat{\bar{\sigma}}_1\right)\pdfrac{\hat{\bar{\sigma}}_1}{\hat{\bar{\sigma}}},\\
+\pdfrac{F}{\kappa}=\left(1-\alpha\right)\begin{bmatrix}
+\dfrac{\left<\hat{\bar{\sigma}}_1\right>\bar{f}_c}{\bar{f}_t^2}\ddfrac{\bar{f}_t}{\kappa_t}\\[4mm]
+\left(1-\dfrac{\left<\hat{\bar{\sigma}}_1\right>}{\bar{f}_t}\right)\ddfrac{\bar{f}_c}{\kappa_c}
+\end{bmatrix}
+\end{gather*}
+\section{Damage Evolution}
+The backbone curves are related to the damage parameter $\kappa_\aleph$.
+\begin{gather*}
+f_\aleph=f_{\aleph,0}\sqrt{\phi_\aleph}\Phi_\aleph,
+\end{gather*}
+with
+\begin{gather*}
+\phi_\aleph=1+a_\aleph\left(2+a_\aleph\right)\kappa_\aleph,\\
+\Phi_\aleph=\dfrac{1+a_\aleph-\sqrt{\phi_\aleph}}{a_\aleph}.
+\end{gather*}
+
+The effective counterpart is
+\begin{gather*}
+\bar{f}_\aleph=\dfrac{f_\aleph}{1-d}=f_{\aleph,0}\sqrt{\phi_\aleph}\Phi_\aleph^{1-c_\aleph/b_\aleph},
+\end{gather*}
+with
+\begin{gather*}
+d=1-\Phi_\aleph^{c_\aleph/b_\aleph}.
+\end{gather*}
+
+The derivatives are
+\begin{gather*}
+\ddfrac{f_\aleph}{\kappa_\aleph}=f_{\aleph,0}\dfrac{a_\aleph+2}{2\sqrt{\phi_\aleph}}\left(a_\aleph-2\sqrt{\phi_\aleph}+1\right),\\
+\ddfrac{\bar{f}_\aleph}{\kappa_\aleph}=f_{\aleph,0}\dfrac{a_\aleph+2}{2\sqrt{\phi_\aleph}}\dfrac{\left(a_\aleph+1+\left(\dfrac{c_\aleph}{b_\aleph}-2\right)\sqrt{\phi_\aleph}\right)}{\Phi_\aleph^{c_\aleph/b_\aleph}},\\
+\ddfrac{d}{\kappa_\aleph}=\dfrac{c_\aleph}{b_\aleph}\dfrac{a_\aleph+2}{2\sqrt{\phi_\aleph}}\Phi_\aleph^{c_\aleph/b_\aleph-1}
+\end{gather*}
+
+The evolution of damage parameters can be written as
+\begin{gather*}
+\Delta\kappa=H\Delta\lambda,
+\end{gather*}
+The matrix $H$ reads
+\begin{gather*}
+H=\begin{bmatrix}
+r\dfrac{f_t}{g_t}\left(\hat{n}_1+\alpha_p\right)\\\left(1-r\right)\dfrac{f_c}{g_c}\left(\hat{n}_3+\alpha_p\right)
+\end{bmatrix},
+\end{gather*}
+and its derivatives are
+\begin{gather*}
+\pdfrac{H}{\kappa}=\text{diag}\begin{pmatrix}
+\dfrac{r}{g_t}\left(\hat{n}_1+\alpha_p\right)\ddfrac{f_t}{\kappa_t}\\[4mm]
+\dfrac{1-r}{g_c}\left(\hat{n}_3+\alpha_p\right)\ddfrac{f_c}{\kappa_c}
+\end{pmatrix},\\
+\pdfrac{H}{\hat{\bar{\sigma}}}=\begin{bmatrix}
+\dfrac{f_t}{g_t}\left(\hat{n}_1+\alpha_p\right)\\
+-\dfrac{f_c}{g_c}\left(\hat{n}_3+\alpha_p\right)
+\end{bmatrix}\cdot\ddfrac{r}{\hat{\bar{\sigma}}}
+\end{gather*}
+
+The residual is expressed as
+\begin{gather*}
+Q=-\kappa_{n+1}+\kappa_n+\Delta\lambda{}H,
+\end{gather*}
+the total differentiation of which is
+\begin{gather*}
+\md{Q}=\pdfrac{Q}{\kappa}\md{\kappa}+\pdfrac{Q}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}+\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda},
+\end{gather*}
+with
+\begin{gather*}
+\pdfrac{Q}{\kappa}=\Delta\lambda\pdfrac{H}{\kappa}-I,\quad
+\pdfrac{Q}{\hat{\bar{\sigma}}}=\Delta\lambda\pdfrac{H}{\hat{\bar{\sigma}}},\quad
+\pdfrac{Q}{\Delta\lambda}=H.
+\end{gather*}
+
+From yield function, we have
+\begin{gather*}
+\pdfrac{F}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}\md{\Delta\lambda}+\pdfrac{F}{\kappa}\md{\kappa}=0,
+\end{gather*}
+so
+\begin{gather*}
+\md{\Delta\lambda}=-\dfrac{1}{\pdfrac{F}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}}\pdfrac{F}{\kappa}\md{\kappa},
+\end{gather*}
+insert in residual expression,
+\begin{gather*}
+\ddfrac{Q}{\kappa}=\pdfrac{Q}{\kappa}-\dfrac{\pdfrac{Q}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}+\pdfrac{Q}{\Delta\lambda}}{\pdfrac{F}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}}\pdfrac{F}{\kappa},
+\end{gather*}
+which is equivalent to
+\begin{gather}
+\ddfrac{Q}{\kappa}=\Delta\lambda\pdfrac{H}{\kappa}-I-\dfrac{\Delta\lambda\pdfrac{H}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}+H}{\pdfrac{F}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\Delta\lambda}}\pdfrac{F}{\kappa},
+\end{gather}
+\section{Algorithm}
+Collecting all terms, the yield function is
+\begin{multline*}
+\alpha{}I_1^{tr}-9K\alpha\alpha_p\Delta\lambda+\sqrt{\dfrac{3}{2}}\left(\norm{s^{tr}}-2G\Delta\lambda\right)\\+\beta\left<\hat{\sigma}^{tr}_1-\Delta\lambda\left(2G\hat{n}_1+3K\alpha_p\right)\right>+\left(1-\alpha\right)\bar{f}_c=0,
+\end{multline*}
+The increment of $\lambda$ can be expressed as
+\begin{gather}
+\Delta\lambda=\dfrac{\alpha{}I_1^{tr}+\sqrt{3J_2^{tr}}+\left<\beta\right>\hat{\sigma}^{tr}_1+\left(1-\alpha\right)\bar{f}_c}{9K\alpha\alpha_p+\sqrt{6}G+\left<\beta\right>\left(2G\hat{n}_1+3K\alpha_p\right)}
+\end{gather}
+\section{Stiffness}
+The consistent tangent stiffness can be derived from three converged equations, which are the stress updating
+\begin{gather*}
+\sigma=\left(1-d\right)\bar{\sigma}=\left(1-d\right)E\left(\varepsilon-\varepsilon^p\right),
+\end{gather*}
+and yield function $F=0$ and residual of the evolution of damage parameters $Q=0$. Differentiating these two equations gives
+\begin{gather*}
+\pdfrac{F}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}+\pdfrac{F}{\kappa}\md{\kappa}=0,\\
+\pdfrac{Q}{\kappa}\md{\kappa}+\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda}+\pdfrac{Q}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}=0.
+\end{gather*}
+
+The total differentiation of the final stress can be expressed as
+\begin{equation}
+\begin{split}
+\md{\sigma}&=-\bar{\sigma}\md{d}+\left(1-d\right)\md{\bar{\sigma}}\\
+&=-\bar{\sigma}\left(\pdfrac{d}{\kappa}\md{\kappa}+\pdfrac{d}{r}\ddfrac{r}{\hat{\bar{\sigma}}}\ddfrac{\hat{\bar{\sigma}}}{\bar{\sigma}}\md{\bar{\sigma}}\right)+\left(1-d\right)\md{\bar{\sigma}}.
+\end{split}
+\end{equation}
+
+Since $d=1-\left(1-d_c\right)\left(1-sd_t\right)$ with $s=s_0+\left(1-s_0\right)r$, we have
+\begin{gather*}
+1-d=\left(1-d_c\right)\left(1-sd_t\right),\\
+\pdfrac{d}{\kappa}=\begin{bmatrix}
+\left(s-sd_c\right)\ddfrac{d_t}{\kappa_t}&\left(1-sd_t\right)\ddfrac{d_c}{\kappa_c}
+\end{bmatrix},\\
+\pdfrac{d}{r}=\pdfrac{d}{s}\ddfrac{s}{r}=d_t\left(1-d_c\right)\left(1-s_0\right).
+\end{gather*}
+
+Now we focus on the effective part $\md{\bar{\sigma}}$.
+\begin{gather*}
+E^{-1}\md{\bar{\sigma}}=\md{\varepsilon}-\md{\varepsilon^p}.
+\end{gather*}
+Since $\varepsilon^p=\Delta\lambda{}\nabla{}G$,
+\begin{gather*}
+E^{-1}\md{\bar{\sigma}}=\md{\varepsilon}-\nabla{}G\md{\Delta\lambda}-\Delta\lambda\md{\nabla{}G},\\
+\left(E^{-1}+\Delta\lambda\nabla^2G\right)\md{\bar{\sigma}}=\md{\varepsilon}-\nabla{}G\md{\Delta\lambda},
+\end{gather*}
+denoting
+\begin{gather}
+S=\left(E^{-1}+\Delta\lambda\dfrac{I^d-n\otimes{}n}{\norm{\bar{s}}}\right)^{-1},
+\end{gather}
+where $I^d$ is the deviatoric unit fourth--order tensor,
+\begin{gather*}
+\md{\bar{\sigma}}=S\md{\varepsilon}-S\nabla{}G\md{\Delta\lambda},
+\end{gather*}
+
+From the residual,
+\begin{gather*}
+\md{\kappa}=-\pdfrac{Q}{\kappa}^{-1}\left(\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda}+\pdfrac{Q}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}\right),
+\end{gather*}
+insert it into the yield function,
+\begin{gather*}
+\pdfrac{F}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}=\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\left(\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda}+\pdfrac{Q}{\hat{\bar{\sigma}}}\md{\hat{\bar{\sigma}}}\right),
+\end{gather*}
+rearranging gives
+\begin{gather*}
+\left(\pdfrac{F}{\hat{\bar{\sigma}}}-\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\hat{\bar{\sigma}}}\right)\ddfrac{\hat{\bar{\sigma}}}{\bar{\sigma}}\md{\bar{\sigma}}=\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda},
+\end{gather*}
+denote
+\begin{gather}
+T=\left(\pdfrac{F}{\hat{\bar{\sigma}}}-\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\hat{\bar{\sigma}}}\right)\ddfrac{\hat{\bar{\sigma}}}{\bar{\sigma}},
+\end{gather}
+we have
+\begin{gather*}
+T\left(S\md{\varepsilon}-S\nabla{}G\md{\Delta\lambda}\right)=\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\Delta\lambda}\md{\Delta\lambda},
+\end{gather*}
+the $\md{\Delta\lambda}$ can be then solved,
+\begin{gather}
+\ddfrac{\Delta\lambda}{\varepsilon}=\dfrac{TS}{TS\nabla{}G+\pdfrac{F}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\Delta\lambda}}.
+\end{gather}
+Finally, the $\md{\bar{\sigma}}$ can be expressed as a function of $\md{\varepsilon}$,
+\begin{gather}
+\ddfrac{\bar{\sigma}}{\varepsilon}=S-S\nabla{}G\ddfrac{\Delta\lambda}{\varepsilon},
+\end{gather}
+
+The final differentiation can be expressed as
+\begin{multline}
+\ddfrac{\sigma}{\varepsilon}=\bar{\sigma}\pdfrac{d}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\Delta\lambda}\ddfrac{\Delta\lambda}{\varepsilon}+\\\left(\left(1-d\right)I+\bar{\sigma}\left(\pdfrac{d}{\kappa}\pdfrac{Q}{\kappa}^{-1}\pdfrac{Q}{\hat{\bar{\sigma}}}-\pdfrac{d}{\hat{\bar{\sigma}}}\right)\ddfrac{\hat{\bar{\sigma}}}{\bar{\sigma}}\right)\ddfrac{\bar{\sigma}}{\varepsilon}.
+\end{multline}
+\end{document}
