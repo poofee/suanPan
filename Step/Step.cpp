@@ -38,7 +38,10 @@ bool Step::is_updated() const { return updated; }
 int Step::initialize() {
     const auto& t_domain = database.lock();
 
-    if(t_domain->get_current_converger_tag() != 0) tester = t_domain->get_current_converger();
+    if(converger_tag != 0)
+        tester = t_domain->get_converger(converger_tag);
+    else if(t_domain->get_current_converger_tag() != 0)
+        tester = t_domain->get_current_converger();
     if(t_domain->get_current_integrator_tag() != 0) modifier = t_domain->get_current_integrator();
     if(t_domain->get_current_solver_tag() != 0) solver = t_domain->get_current_solver();
 
@@ -143,6 +146,8 @@ void Step::set_solver(const shared_ptr<Solver>& S) {
 }
 
 const shared_ptr<Solver>& Step::get_solver() const { return solver; }
+
+void Step::set_converger_tag(const unsigned T) { converger_tag = T; }
 
 void Step::set_converger(const shared_ptr<Converger>& C) {
     if(tester == C) return;

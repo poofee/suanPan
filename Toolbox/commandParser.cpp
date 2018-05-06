@@ -442,19 +442,12 @@ int create_new_cload(const shared_ptr<DomainBase>& domain, istringstream& comman
     vector<uword> node_tag;
     while(get_input(command, node)) node_tag.push_back(node);
 
-    const auto& step_tag = domain->get_current_step_tag();
-
-    if(!domain->insert(make_shared<CLoad>(load_id, step_tag, magnitude, uvec(node_tag), dof_id, amplitude_id))) suanpan_error("create_new_cload() fails to create new load.\n");
+    if(!domain->insert(make_shared<CLoad>(load_id, domain->get_current_step_tag(), magnitude, uvec(node_tag), dof_id, amplitude_id))) suanpan_error("create_new_cload() fails to create new load.\n");
 
     return 0;
 }
 
 int create_new_converger(const shared_ptr<DomainBase>& domain, istringstream& command) {
-    if(domain->get_current_step_tag() == 0) {
-        suanpan_info("create_new_converger() needs a valid step.\n");
-        return 0;
-    }
-
     string converger_id;
     if(!get_input(command, converger_id)) {
         suanpan_info("create_new_converger() requires converger type.\n");
@@ -479,7 +472,7 @@ int create_new_converger(const shared_ptr<DomainBase>& domain, istringstream& co
         return 0;
     }
 
-    auto print_flag = 0;
+    string print_flag = "false";
     if(!command.eof() && !get_input(command, print_flag)) {
         suanpan_info("create_new_converger() reads wrong print flag.\n");
         return 0;
@@ -487,23 +480,24 @@ int create_new_converger(const shared_ptr<DomainBase>& domain, istringstream& co
 
     auto code = 0;
     if(is_equal(converger_id, "AbsResidual")) {
-        if(domain->insert(make_shared<AbsResidual>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<AbsResidual>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else if(is_equal(converger_id, "RelResidual")) {
-        if(domain->insert(make_shared<RelResidual>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<RelResidual>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else if(is_equal(converger_id, "AbsIncreDisp")) {
-        if(domain->insert(make_shared<AbsIncreDisp>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<AbsIncreDisp>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else if(is_equal(converger_id, "RelIncreDisp")) {
-        if(domain->insert(make_shared<RelIncreDisp>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<RelIncreDisp>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else if(is_equal(converger_id, "AbsIncreEnergy")) {
-        if(domain->insert(make_shared<AbsIncreEnergy>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<AbsIncreEnergy>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else if(is_equal(converger_id, "RelIncreEnergy")) {
-        if(domain->insert(make_shared<RelIncreEnergy>(tag, tolerance, max_iteration, !!print_flag))) code = 1;
+        if(domain->insert(make_shared<RelIncreEnergy>(tag, tolerance, max_iteration, is_true(print_flag)))) code = 1;
     } else
         suanpan_info("create_new_converger() cannot identify the converger type.\n");
 
-    if(code == 1)
+    if(code == 1) {
+        if(domain->get_current_step_tag() != 0) domain->get_current_step()->set_converger_tag(tag);
         domain->set_current_converger_tag(tag);
-    else
+    } else
         suanpan_info("create_new_converger() fails to create the new converger.\n");
 
     return 0;

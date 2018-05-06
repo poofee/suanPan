@@ -54,6 +54,8 @@ class Step : public Tag {
 
     bool fixed_step_size = false; /**< auto-stepping */
 
+    unsigned converger_tag = 0;
+
     weak_ptr<DomainBase> database;
     shared_ptr<Factory<double>> factory;
     shared_ptr<Solver> solver;
@@ -79,6 +81,7 @@ public:
     void set_solver(const shared_ptr<Solver>&);
     const shared_ptr<Solver>& get_solver() const;
 
+    void set_converger_tag(unsigned);
     void set_converger(const shared_ptr<Converger>&);
     const shared_ptr<Converger>& get_converger() const;
 
