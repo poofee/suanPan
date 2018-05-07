@@ -38,12 +38,20 @@ bool Step::is_updated() const { return updated; }
 int Step::initialize() {
     const auto& t_domain = database.lock();
 
-    if(converger_tag != 0)
+    if(converger_tag != 0 && t_domain->find_converger(converger_tag))
         tester = t_domain->get_converger(converger_tag);
     else if(t_domain->get_current_converger_tag() != 0)
         tester = t_domain->get_current_converger();
-    if(t_domain->get_current_integrator_tag() != 0) modifier = t_domain->get_current_integrator();
-    if(t_domain->get_current_solver_tag() != 0) solver = t_domain->get_current_solver();
+
+    if(integrator_tag != 0 && t_domain->find_integrator(integrator_tag))
+        modifier = t_domain->get_integrator(integrator_tag);
+    else if(t_domain->get_current_integrator_tag() != 0)
+        modifier = t_domain->get_current_integrator();
+
+    if(solver_tag != 0 && t_domain->find_solver(solver_tag))
+        solver = t_domain->get_solver(solver_tag);
+    else if(t_domain->get_current_solver_tag() != 0)
+        solver = t_domain->get_current_solver();
 
     switch(get_class_tag()) {
     case CT_ARCLENGTH:
@@ -139,6 +147,8 @@ void Step::set_factory(const shared_ptr<Factory<double>>& F) {
 
 const shared_ptr<Factory<double>>& Step::get_factory() const { return factory; }
 
+void Step::set_solver_tag(const unsigned T) { solver_tag = T; }
+
 void Step::set_solver(const shared_ptr<Solver>& S) {
     if(solver == S) return;
     solver = S;
@@ -156,6 +166,8 @@ void Step::set_converger(const shared_ptr<Converger>& C) {
 }
 
 const shared_ptr<Converger>& Step::get_converger() const { return tester; }
+
+void Step::set_integrator_tag(const unsigned T) { integrator_tag = T; }
 
 void Step::set_integrator(const shared_ptr<Integrator>& G) {
     if(modifier == G) return;

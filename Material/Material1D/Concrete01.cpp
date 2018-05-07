@@ -143,12 +143,8 @@ int Concrete01::update_trial_status(const vec& t_strain) {
             update_residual = true;
         }
 
-        if(update_residual && !no_residual) {
-            // equation (3-150)
-            const auto secant_stiffness = initial_stiffness(0) * (trial_stress(0) / initial_stiffness(0) / peak_strain + .57) / (trial_strain(0) / peak_strain + .57);
-            // equation (3-154)
-            residual_strain = trial_strain(0) - trial_stress(0) / secant_stiffness;
-        }
+        // equation (3-150) (3-154)
+        if(update_residual && !no_residual) residual_strain = trial_strain(0) - trial_stress(0) / (initial_stiffness(0) * (trial_stress(0) / initial_stiffness(0) / peak_strain + .57) / (trial_strain(0) / peak_strain + .57));
     } else {
         if(no_tension) {
             trial_stress = 0.;
@@ -184,7 +180,10 @@ int Concrete01::update_trial_status(const vec& t_strain) {
     }
 
     // keep stiffness as a nonzero number
-    if(abs(trial_stiffness(0)) < 1E-10) trial_stiffness(0) = (suanpan::sign(trial_stiffness(0)) == 0. ? 1. : suanpan::sign(trial_stiffness(0))) * 1E-8;
+    if(abs(trial_stiffness(0)) < 1E-10) {
+        const auto stiffness_sign = suanpan::sign(trial_stiffness(0));
+        trial_stiffness(0) = (stiffness_sign == 0. ? 1. : stiffness_sign) * 1E-8;
+    }
 
     return SUANPAN_SUCCESS;
 }

@@ -617,6 +617,7 @@ int create_new_integrator(const shared_ptr<DomainBase>& domain, istringstream& c
         return 0;
     }
 
+    auto code = 0;
     if(is_equal(integrator_type, "Newmark")) {
         auto alpha = .25, beta = .5;
         if(!command.eof()) {
@@ -628,7 +629,7 @@ int create_new_integrator(const shared_ptr<DomainBase>& domain, istringstream& c
                 suanpan_error("create_new_integrator() needs a valid beta.\n");
                 return 0;
             }
-            if(domain->insert(make_shared<Newmark>(tag, alpha, beta))) domain->set_current_integrator_tag(tag);
+            if(domain->insert(make_shared<Newmark>(tag, alpha, beta))) code = 1;
         }
     } else if(is_equal(integrator_type, "GeneralizedAlpha")) {
         auto alpha_m = .0, alpha_f = .0;
@@ -641,10 +642,16 @@ int create_new_integrator(const shared_ptr<DomainBase>& domain, istringstream& c
                 suanpan_error("create_new_integrator() needs a valid alpha_f.\n");
                 return 0;
             }
-            if(domain->insert(make_shared<GeneralizedAlpha>(tag, alpha_m, alpha_f))) domain->set_current_integrator_tag(tag);
+            if(domain->insert(make_shared<GeneralizedAlpha>(tag, alpha_m, alpha_f))) code = 1;
         }
     } else if(is_equal(integrator_type, "CentralDifference"))
-        if(domain->insert(make_shared<CentralDifference>(tag))) domain->set_current_integrator_tag(tag);
+        if(domain->insert(make_shared<CentralDifference>(tag))) code = 1;
+
+    if(code == 1) {
+        if(domain->get_current_step_tag() != 0) domain->get_current_step()->set_integrator_tag(tag);
+        domain->set_current_integrator_tag(tag);
+    } else
+        suanpan_info("create_new_integrator() fails to create the new integrator.\n");
 
     return 0;
 }
@@ -793,12 +800,6 @@ int create_new_hdf5recorder(const shared_ptr<DomainBase>& domain, istringstream&
 }
 
 int create_new_solver(const shared_ptr<DomainBase>& domain, istringstream& command) {
-    const auto& step_tag = domain->get_current_step_tag();
-    if(step_tag == 0) {
-        suanpan_info("create_new_solver() needs a valid step.\n");
-        return 0;
-    }
-
     string solver_type;
     if((command >> solver_type).fail()) {
         suanpan_info("create_new_solver() requires solver type.\n");
@@ -829,9 +830,10 @@ int create_new_solver(const shared_ptr<DomainBase>& domain, istringstream& comma
     } else
         suanpan_error("create_new_solver() cannot identify solver type.\n");
 
-    if(code == 1)
+    if(code == 1) {
+        if(domain->get_current_step_tag() != 0) domain->get_current_step()->set_solver_tag(tag);
         domain->set_current_solver_tag(tag);
-    else
+    } else
         suanpan_error("create_new_solver() cannot create the new solver.\n");
 
     return 0;
