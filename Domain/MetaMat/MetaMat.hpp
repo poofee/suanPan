@@ -86,6 +86,7 @@ public:
     virtual MetaMat inv();
 
     virtual void print();
+    virtual void save(const char*);
 };
 
 template <typename T>
@@ -425,6 +426,8 @@ template <typename T> void MetaMat<T>::print() {
     }
     suanpan_info("\n");
 }
+
+template <typename T> void MetaMat<T>::save(const char*) {}
 
 #endif
 

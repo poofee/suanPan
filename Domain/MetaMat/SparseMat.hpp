@@ -76,6 +76,7 @@ public:
     MetaMat<T> inv() override { throw; }
 
     void print() override;
+    void save(const char*) override;
 };
 
 template <typename T>
@@ -168,6 +169,8 @@ template <typename T> Mat<T> SparseMat<T>::solve_trs(const Mat<T>& in_mat) { ret
 template <typename T> int SparseMat<T>::solve_trs(Mat<T>& out_mat, const Mat<T>& in_mat) { return solve(out_mat, in_mat); }
 
 template <typename T> void SparseMat<T>::print() { arma_mat.print(); }
+
+template <typename T> void SparseMat<T>::save(const char* name) { arma_mat.save(name, coord_ascii); }
 
 #endif
 

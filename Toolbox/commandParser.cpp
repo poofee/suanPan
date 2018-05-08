@@ -272,9 +272,23 @@ int save_object(const shared_ptr<Bead>& model, istringstream& command) {
         return 0;
     }
 
-    unsigned tag;
-    while(get_input(command, tag))
-        if(is_equal(object_id, "Recorder") && domain->find_recorder(tag)) domain->get_recorder(tag)->save();
+    if(is_equal(object_id, "Recorder")) {
+        unsigned tag;
+        while(get_input(command, tag))
+            if(domain->find_recorder(tag)) domain->get_recorder(tag)->save();
+    } else if(is_equal(object_id, "Stiffness")) {
+        string name;
+        if(!command.eof() && !get_input(command, name)) name = "K";
+        domain->get_factory()->get_stiffness()->save(name.c_str());
+    } else if(is_equal(object_id, "Mass")) {
+        string name;
+        if(!command.eof() && !get_input(command, name)) name = "M";
+        domain->get_factory()->get_mass()->save(name.c_str());
+    } else if(is_equal(object_id, "Damping")) {
+        string name;
+        if(!command.eof() && !get_input(command, name)) name = "C";
+        domain->get_factory()->get_damping()->save(name.c_str());
+    }
 
     return 0;
 }

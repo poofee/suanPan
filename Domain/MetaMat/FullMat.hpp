@@ -33,6 +33,8 @@ template <typename T> class FullMat : public MetaMat<T> {
 public:
     FullMat();
     explicit FullMat(uword);
+
+    void save(const char*) override;
 };
 
 template <typename T> struct is_Full { static const bool value = false; };
@@ -46,6 +48,11 @@ FullMat<T>::FullMat()
 template <typename T>
 FullMat<T>::FullMat(const uword in_size)
     : MetaMat<T>(in_size, in_size, in_size * in_size) {}
+
+template <typename T> void FullMat<T>::save(const char* name) {
+    Mat<T> aux(access::rwp(this->memory), this->n_rows, this->n_cols, false, false);
+    aux.save(name, raw_ascii);
+}
 
 #endif
 
