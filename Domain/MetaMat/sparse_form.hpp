@@ -51,6 +51,8 @@ public:
     virtual void reset() const = 0;
     virtual void zeros() const = 0;
 
+    virtual T max() const = 0;
+
     virtual bool init() = 0;
     virtual bool init(uword) = 0;
     virtual bool init(uword, uword, uword) = 0;

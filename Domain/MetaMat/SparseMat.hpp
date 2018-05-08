@@ -96,13 +96,13 @@ template <typename T> void SparseMat<T>::reset() {
     arma_mat.reset();
 }
 
-template <typename T> T SparseMat<T>::max() const { return arma_mat.max(); }
+template <typename T> T SparseMat<T>::max() const { return csc_mat.max(); }
 
 template <typename T> const T& SparseMat<T>::operator()(uword in_row, uword in_col) const { return csc_mat(in_row, in_col); }
 
 template <typename T> T& SparseMat<T>::at(uword in_row, uword in_col) { return triplet_mat.at(in_row, in_col); }
 
-template <typename T> void SparseMat<T>::triplet_to_csc() { csc_mat = csc_form<T>(triplet_mat); }
+template <typename T> void SparseMat<T>::triplet_to_csc() { csc_mat = triplet_mat; }
 
 template <typename T> MetaMat<T> SparseMat<T>::operator+(const MetaMat<T>& in_mat) {
     auto N = *this;

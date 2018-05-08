@@ -12,6 +12,9 @@ cload 1 0 200 2 2
 
 step static 1
 set ini_step_size 1
+set fixed_step_size 1
+set symm_mat false
+set band_mat false
 
 analyze
 

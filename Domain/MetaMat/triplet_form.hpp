@@ -57,6 +57,8 @@ public:
     void reset() const override;
     void zeros() const override;
 
+    T max() const override;
+
     bool init() override;
     bool init(uword) override;
     bool init(uword, uword, uword) override;
@@ -233,6 +235,8 @@ template <typename T> void triplet_form<T>::zeros() const {
     access::rw(csc_sorted) = false;
     access::rw(csr_sorted) = false;
 }
+
+template <typename T> T triplet_form<T>::max() const { return *std::max_element(val_idx, val_idx + c_size); }
 
 template <typename T> bool triplet_form<T>::init() {
     reset();

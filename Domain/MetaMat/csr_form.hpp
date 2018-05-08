@@ -51,6 +51,8 @@ public:
     void reset() const override;
     void zeros() const override;
 
+    T max() const override;
+
     bool init() override;
     bool init(uword) override;
     bool init(uword, uword, uword) override;
@@ -145,6 +147,8 @@ template <typename T> void csr_form<T>::reset() const {
 }
 
 template <typename T> void csr_form<T>::zeros() const { access::rw(c_size) = 0; }
+
+template <typename T> T csr_form<T>::max() const { return *std::max_element(val_idx, val_idx + c_size); }
 
 template <typename T> bool csr_form<T>::init() {
     reset();

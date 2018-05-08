@@ -147,12 +147,13 @@ int BC::process(const shared_ptr<DomainBase>& D) {
             for(const auto& J : dofs)
                 if(J <= t_dof.n_elem) {
                     auto& t_idx = t_dof(J - 1);
-                    if(D->insert_restrained_dof(static_cast<unsigned>(t_idx)))
+                    if(D->insert_restrained_dof(static_cast<unsigned>(t_idx))) {
                         if(t_matrix(t_idx, t_idx) == 0) {
                             auto& t_set = D->get_restrained_dof();
                             t_matrix.at(t_idx, t_idx) = t_set.size() == 1 ? t_set_b.empty() ? multiplier * t_matrix.max() : t_matrix(*t_set_b.cbegin(), *t_set_b.cbegin()) : *t_set.cbegin() == t_idx ? t_matrix(*++t_set.cbegin(), *++t_set.cbegin()) : t_matrix(*t_set.cbegin(), *t_set.cbegin());
                         } else
-                            t_matrix.at(t_idx, t_idx) *= multiplier;
+                            t_matrix.at(t_idx, t_idx) = multiplier * t_matrix(t_idx, t_idx);
+                    }
                 }
         }
     }
