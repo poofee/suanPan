@@ -84,7 +84,7 @@ int Step::initialize() {
 
     factory = t_domain->get_factory();
 
-    if(solver->get_class_tag() == CT_NEWTON && sparse_mat)
+    if(sparse_mat)
         factory->set_storage_scheme(symm_mat ? StorageScheme::SPARSESYMM : StorageScheme::SPARSE);
     else if(get_class_tag() != CT_ARCLENGTH) {
         if(symm_mat && band_mat)
