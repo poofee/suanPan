@@ -57,4 +57,11 @@ public:
     }
 };
 
+class abs_comparator : public sparse_comparator {
+public:
+    explicit abs_comparator(const uword* const location)
+        : sparse_comparator(location, nullptr) {}
+    bool operator()(const uword idx_a, const uword idx_b) const override { return row_idx[idx_a] < row_idx[idx_b]; }
+};
+
 #endif

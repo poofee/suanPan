@@ -26,15 +26,17 @@ using namespace arma;
 
 template <typename T, typename FT> class sparse_form {
 protected:
+    const T bin = 0.; // bin for out of bound elements
+
     virtual void copy_memory(uword, const uword*, const uword*, const T*) = 0;
 
 public:
     typedef FT form_type;
 
-    uword n_rows = 0; // number of rows
-    uword n_cols = 0; // number of cols
-    uword n_elem = 0; // maximum number of elements
-    uword c_size = 0; // current number of valid elements
+    const uword n_rows = 0; // number of rows
+    const uword n_cols = 0; // number of cols
+    const uword n_elem = 0; // maximum number of elements
+    const uword c_size = 0; // current number of valid elements
 
     sparse_form() = default;
     sparse_form(uword, uword, uword = 0);

@@ -34,6 +34,7 @@
 
 template <typename T> class SparseMat : public MetaMat<T> {
     triplet_form<T> triplet_mat;
+    csc_form<T> csc_mat;
     SpMat<T> arma_mat;
 
 public:
@@ -49,7 +50,7 @@ public:
     const T& operator()(uword, uword) const override;
     T& at(uword, uword) override;
 
-    void csc_condense();
+    void triplet_to_csc();
 
     const T* memptr() const override { throw; }
     T* memptr() override { throw; }
@@ -79,28 +80,29 @@ public:
 
 template <typename T>
 SparseMat<T>::SparseMat(const uword in_row, const uword in_col)
-    : triplet_mat(in_row, in_col)
-    , arma_mat(in_row, in_col) {}
+    : triplet_mat(in_row, in_col) {}
 
 template <typename T> bool SparseMat<T>::is_empty() const { return arma_mat.is_empty(); }
 
 template <typename T> void SparseMat<T>::zeros() {
     triplet_mat.zeros();
+    csc_mat.zeros();
     arma_mat.zeros();
 }
 
 template <typename T> void SparseMat<T>::reset() {
     triplet_mat.reset();
+    csc_mat.reset();
     arma_mat.reset();
 }
 
 template <typename T> T SparseMat<T>::max() const { return arma_mat.max(); }
 
-template <typename T> const T& SparseMat<T>::operator()(uword in_row, uword in_col) const { return triplet_mat(in_row, in_col); }
+template <typename T> const T& SparseMat<T>::operator()(uword in_row, uword in_col) const { return csc_mat(in_row, in_col); }
 
 template <typename T> T& SparseMat<T>::at(uword in_row, uword in_col) { return triplet_mat.at(in_row, in_col); }
 
-template <typename T> void SparseMat<T>::csc_condense() { triplet_mat.csc_condense(); }
+template <typename T> void SparseMat<T>::triplet_to_csc() { csc_mat = csc_form<T>(triplet_mat); }
 
 template <typename T> MetaMat<T> SparseMat<T>::operator+(const MetaMat<T>& in_mat) {
     auto N = *this;
@@ -138,10 +140,10 @@ template <typename T> MetaMat<T>& SparseMat<T>::operator*=(const T scalar) {
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
-    csc_form<T> csc_mat(triplet_mat);
+    triplet_to_csc();
 
-    const Col<uword> row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
-    const Col<uword> col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
+    const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
+    const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
     const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
 
     arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);
@@ -150,10 +152,10 @@ template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
 }
 
 template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_mat) {
-    csc_form<T> csc_mat(triplet_mat);
+    triplet_to_csc();
 
-    const Col<uword> row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
-    const Col<uword> col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
+    const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
+    const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
     const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
 
     arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);

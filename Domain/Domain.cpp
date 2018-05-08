@@ -652,25 +652,25 @@ void Domain::assemble_resistance() const {
 void Domain::assemble_mass() const {
     factory->clear_mass();
     for(const auto& I : element_pond.get()) factory->assemble_mass(I->get_mass(), I->get_dof_encoding());
-    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_mass())->csc_condense();
+    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_mass())->triplet_to_csc();
 }
 
 void Domain::assemble_initial_stiffness() const {
     factory->clear_stiffness();
     for(const auto& I : element_pond.get()) factory->assemble_stiffness(I->get_initial_stiffness(), I->get_dof_encoding());
-    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_stiffness())->csc_condense();
+    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_stiffness())->triplet_to_csc();
 }
 
 void Domain::assemble_stiffness() const {
     factory->clear_stiffness();
     for(const auto& I : element_pond.get()) factory->assemble_stiffness(I->get_stiffness(), I->get_dof_encoding());
-    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_stiffness())->csc_condense();
+    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_stiffness())->triplet_to_csc();
 }
 
 void Domain::assemble_damping() const {
     factory->clear_damping();
     for(const auto& I : element_pond.get()) factory->assemble_damping(I->get_damping(), I->get_dof_encoding());
-    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_damping())->csc_condense();
+    if(factory->get_storage_scheme() == StorageScheme::SPARSE) std::dynamic_pointer_cast<SparseMat<double>>(factory->get_damping())->triplet_to_csc();
 }
 
 void Domain::erase_machine_error() const {

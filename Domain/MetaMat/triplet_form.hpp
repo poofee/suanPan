@@ -25,7 +25,7 @@ template <typename T> class csc_form;
 template <typename T> class csr_form;
 
 template <typename T> class triplet_form : public sparse_form<T, triplet_form<T>> {
-    T bin = 0.; // bin for out of bound elements
+    using sparse_form<T, triplet_form<T>>::bin;
 
     void condense() const;
 
@@ -157,7 +157,7 @@ template <typename T> void triplet_form<T>::copy_memory(const uword size, const 
     bytes = size * sizeof(T);
     memcpy(this->val_idx + this->c_size, in_val_idx, bytes);
 
-    c_size = new_size;
+    access::rw(c_size) = new_size;
 }
 
 template <typename T>
@@ -252,13 +252,13 @@ template <typename T> bool triplet_form<T>::init(const uword in_elem) {
         zeros();
         return true;
     }
-    n_elem = in_elem;
+    access::rw(n_elem) = in_elem;
     return init();
 }
 
 template <typename T> bool triplet_form<T>::init(const uword in_row, const uword in_col, const uword in_elem) {
-    if(n_rows != in_row) n_rows = in_row;
-    if(n_cols != in_col) n_cols = in_col;
+    if(n_rows != in_row) access::rw(n_rows) = in_row;
+    if(n_cols != in_col) access::rw(n_cols) = in_col;
 
     return init(in_elem);
 }
@@ -360,9 +360,12 @@ template <typename T> bool triplet_form<T>::csr_sort() const {
     }
 
     std::vector<uword> index(c_size);
-    for(uword I = 0; I < uword(index.size()); ++I) index[I] = I;
+    for(uword I = 0; I < uword(index.size()); ++I) {
+        new_row_idx[I] = row_idx[I] * n_cols + col_idx[I];
+        index[I] = I;
+    }
 
-    std::sort(index.begin(), index.end(), csr_comparator(row_idx, col_idx));
+    std::sort(index.begin(), index.end(), abs_comparator(new_row_idx));
 
     for(uword I = 0; I < c_size; ++I) {
         new_row_idx[I] = row_idx[index[I]];
@@ -397,9 +400,12 @@ template <typename T> bool triplet_form<T>::csc_sort() const {
     }
 
     std::vector<uword> index(c_size);
-    for(uword I = 0; I < index.size(); ++I) index[I] = I;
+    for(uword I = 0; I < index.size(); ++I) {
+        new_row_idx[I] = col_idx[I] * n_rows + row_idx[I];
+        index[I] = I;
+    }
 
-    std::sort(index.begin(), index.end(), csc_comparator(row_idx, col_idx));
+    std::sort(index.begin(), index.end(), abs_comparator(new_row_idx));
 
     for(uword I = 0; I < c_size; ++I) {
         new_row_idx[I] = row_idx[index[I]];
@@ -450,10 +456,10 @@ template <typename T> T& triplet_form<T>::at(const uword row, const uword col) {
         if(c_size == n_elem) resize();
         row_idx[c_size] = row;
         col_idx[c_size] = col;
-        return val_idx[c_size++];
+        return val_idx[access::rw(c_size)++];
     }
 
-    return bin;
+    return access::rw(bin);
 }
 
 template <typename T> template <typename T2> triplet_form<T> triplet_form<T>::operator*(const T2 scalar) {

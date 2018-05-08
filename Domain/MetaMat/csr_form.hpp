@@ -25,6 +25,8 @@ template <typename T> class triplet_form;
 template <typename T> class csc_form;
 
 template <typename T> class csr_form : public sparse_form<T, csr_form<T>> {
+    using sparse_form<T, csr_form<T>>::bin;
+
     void copy_memory(uword, const uword*, const uword*, const T*) override;
 
 public:
@@ -72,7 +74,7 @@ public:
     explicit csr_form(const csc_form<T>&);
     csr_form& operator=(const csc_form<T>&);
 
-    T operator()(uword, uword);
+    const T& operator()(uword, uword) const;
 };
 
 template <typename T> void csr_form<T>::copy_memory(const uword size, const uword* const in_row_ptr, const uword* const in_col_idx, const T* const in_val_idx) {
@@ -85,7 +87,7 @@ template <typename T> void csr_form<T>::copy_memory(const uword size, const uwor
     bytes = size * sizeof(T);
     memcpy(this->val_idx, in_val_idx, bytes);
 
-    c_size = size;
+    access::rw(c_size) = size;
 }
 
 template <typename T> csr_form<T>::~csr_form() { csr_form<T>::reset(); }
@@ -122,14 +124,14 @@ template <typename T> csr_form<T>& csr_form<T>::operator=(const csr_form& in_mat
 
 template <typename T> csr_form<T>& csr_form<T>::operator=(csr_form&& in_mat) noexcept {
     reset();
-    n_rows = in_mat.n_rows;
-    n_cols = in_mat.n_cols;
-    n_elem = in_mat.n_elem;
-    c_size = in_mat.c_size;
+    access::rw(n_rows) = in_mat.n_rows;
+    access::rw(n_cols) = in_mat.n_cols;
+    access::rw(n_elem) = in_mat.n_elem;
+    access::rw(c_size) = in_mat.c_size;
     col_idx = in_mat.col_idx;
     row_ptr = in_mat.row_ptr;
     val_idx = in_mat.val_idx;
-    in_mat.n_rows = in_mat.n_cols = in_mat.n_elem = in_mat.c_size = 0;
+    access::rw(in_mat.n_rows) = access::rw(in_mat.n_cols) = access::rw(in_mat.n_elem) = access::rw(in_mat.c_size) = 0;
     in_mat.row_ptr = in_mat.col_idx = nullptr;
     in_mat.val_idx = nullptr;
     return *this;
@@ -162,13 +164,13 @@ template <typename T> bool csr_form<T>::init(const uword in_elem) {
         zeros();
         return true;
     }
-    n_elem = in_elem;
+    access::rw(n_elem) = in_elem;
     return init();
 }
 
 template <typename T> bool csr_form<T>::init(const uword in_row, const uword in_col, const uword in_elem) {
-    if(n_rows != in_row) n_rows = in_row;
-    if(n_cols != in_col) n_cols = in_col;
+    if(n_rows != in_row) access::rw(n_rows) = in_row;
+    if(n_cols != in_col) access::rw(n_cols) = in_col;
 
     return init(in_elem);
 }
@@ -307,7 +309,7 @@ template <typename T> csr_form<T>& csr_form<T>::operator=(triplet_form<T>& in_ma
     } else
         row_ptr[n_rows] = current_pos;
 
-    c_size = current_pos;
+    access::rw(c_size) = current_pos;
 
     return *this;
 }
@@ -337,12 +339,13 @@ template <typename T> csr_form<T>& csr_form<T>::operator=(const csc_form<T>& in_
     return *this;
 }
 
-template <typename T> T csr_form<T>::operator()(const uword in_row, const uword in_col) {
+template <typename T> const T& csr_form<T>::operator()(const uword in_row, const uword in_col) const {
     if(in_row < n_rows && in_col < n_cols)
         for(auto I = row_ptr[in_row - 1]; I < row_ptr[in_row]; ++I)
             if(col_idx[I] == in_col) return val_idx[I];
 
-    return 0.;
+    access::rw(bin) = 0.;
+    return bin;
 }
 
 #endif
