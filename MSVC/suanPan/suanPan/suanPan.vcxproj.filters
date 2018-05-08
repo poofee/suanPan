@@ -355,6 +355,9 @@
     <ClInclude Include="..\..\..\Domain\MetaMat\triplet_form.hpp">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Domain\MetaMat\SparseSymmMat.hpp">
+      <Filter>Main</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\Resource\icon1.ico">

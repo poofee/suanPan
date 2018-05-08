@@ -306,6 +306,7 @@
     <ClInclude Include="..\..\..\Domain\MetaMat\MetaMat.hpp" />
     <ClInclude Include="..\..\..\Domain\MetaMat\operator_times.hpp" />
     <ClInclude Include="..\..\..\Domain\MetaMat\SparseMat.hpp" />
+    <ClInclude Include="..\..\..\Domain\MetaMat\SparseSymmMat.hpp" />
     <ClInclude Include="..\..\..\Domain\MetaMat\sparse_form.hpp" />
     <ClInclude Include="..\..\..\Domain\MetaMat\SymmPackMat.hpp" />
     <ClInclude Include="..\..\..\Domain\MetaMat\triplet_form.hpp" />

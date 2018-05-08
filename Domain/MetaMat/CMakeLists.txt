@@ -9,6 +9,7 @@ target_sources(${PROJECT_NAME} PRIVATE
         "Domain/MetaMat/operator_times.hpp"
         "Domain/MetaMat/sparse_form.hpp"
         "Domain/MetaMat/SparseMat.hpp"
+        "Domain/MetaMat/SparseSymmMat.hpp"
         "Domain/MetaMat/SymmPackMat.hpp"
         "Domain/MetaMat/triplet_form.hpp"
         )

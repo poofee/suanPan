@@ -35,7 +35,7 @@
 #include <suanPan.h>
 
 enum class AnalysisType { NONE, DISP, EIGEN, STATICS, DYNAMICS };
-enum class StorageScheme { FULL, BAND, BANDSYMM, SYMMPACK, SPARSE };
+enum class StorageScheme { FULL, BAND, BANDSYMM, SYMMPACK, SPARSE, SPARSESYMM };
 
 template <typename T> class Factory final {
     unsigned n_size = 0;               /**< number of degrees of freedom */
@@ -578,6 +578,8 @@ template <typename T> void Factory<T>::initialize_mass() {
         break;
     case StorageScheme::SPARSE:
         global_mass = make_shared<SparseMat<T>>(n_size, n_size);
+    case StorageScheme::SPARSESYMM:
+        global_mass = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
     }
 }
@@ -598,6 +600,8 @@ template <typename T> void Factory<T>::initialize_damping() {
         break;
     case StorageScheme::SPARSE:
         global_damping = make_shared<SparseMat<T>>(n_size, n_size);
+    case StorageScheme::SPARSESYMM:
+        global_damping = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
     }
 }
@@ -618,6 +622,8 @@ template <typename T> void Factory<T>::initialize_stiffness() {
         break;
     case StorageScheme::SPARSE:
         global_stiffness = make_shared<SparseMat<T>>(n_size, n_size);
+    case StorageScheme::SPARSESYMM:
+        global_stiffness = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
     }
 }
@@ -1228,7 +1234,7 @@ template <typename T> void Factory<T>::assemble_resistance(const Mat<T>& ER, con
 template <typename T> void Factory<T>::assemble_mass(const Mat<T>& EM, const uvec& EI) {
     if(EM.is_empty()) return;
 
-    if(storage_type == StorageScheme::SPARSE) {
+    if(storage_type == StorageScheme::SPARSE || storage_type == StorageScheme::SPARSESYMM) {
         for(unsigned I = 0; I < EI.n_elem; ++I)
             for(unsigned J = 0; J < EI.n_elem; ++J) global_mass->at(EI(J), EI(I)) = EM(J, I);
     } else {
@@ -1240,7 +1246,7 @@ template <typename T> void Factory<T>::assemble_mass(const Mat<T>& EM, const uve
 template <typename T> void Factory<T>::assemble_damping(const Mat<T>& EC, const uvec& EI) {
     if(EC.is_empty()) return;
 
-    if(storage_type == StorageScheme::SPARSE) {
+    if(storage_type == StorageScheme::SPARSE || storage_type == StorageScheme::SPARSESYMM) {
         for(unsigned I = 0; I < EI.n_elem; ++I)
             for(unsigned J = 0; J < EI.n_elem; ++J) global_damping->at(EI(J), EI(I)) = EC(J, I);
     } else {
@@ -1252,7 +1258,7 @@ template <typename T> void Factory<T>::assemble_damping(const Mat<T>& EC, const 
 template <typename T> void Factory<T>::assemble_stiffness(const Mat<T>& EK, const uvec& EI) {
     if(EK.is_empty()) return;
 
-    if(storage_type == StorageScheme::SPARSE) {
+    if(storage_type == StorageScheme::SPARSE || storage_type == StorageScheme::SPARSESYMM) {
         for(unsigned I = 0; I < EI.n_elem; ++I)
             for(unsigned J = 0; J < EI.n_elem; ++J) global_stiffness->at(EI(J), EI(I)) = EK(J, I);
     } else {

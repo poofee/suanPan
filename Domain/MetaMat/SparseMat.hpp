@@ -33,6 +33,7 @@
 #include "triplet_form.hpp"
 
 template <typename T> class SparseMat : public MetaMat<T> {
+protected:
     triplet_form<T> triplet_mat;
     csc_form<T> csc_mat;
     SpMat<T> arma_mat;
@@ -50,7 +51,8 @@ public:
     const T& operator()(uword, uword) const override;
     T& at(uword, uword) override;
 
-    void triplet_to_csc();
+    virtual void triplet_to_csc();
+    virtual void csc_to_arma();
 
     const T* memptr() const override { throw; }
     T* memptr() override { throw; }
@@ -105,6 +107,16 @@ template <typename T> T& SparseMat<T>::at(uword in_row, uword in_col) { return t
 
 template <typename T> void SparseMat<T>::triplet_to_csc() { csc_mat = triplet_mat; }
 
+template <typename T> void SparseMat<T>::csc_to_arma() {
+    triplet_to_csc();
+
+    const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
+    const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
+    const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
+
+    arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);
+}
+
 template <typename T> MetaMat<T> SparseMat<T>::operator+(const MetaMat<T>& in_mat) {
     auto N = *this;
     N.arma_mat += dynamic_cast<const SparseMat<T>&>(in_mat).arma_mat;
@@ -141,26 +153,12 @@ template <typename T> MetaMat<T>& SparseMat<T>::operator*=(const T scalar) {
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
-    triplet_to_csc();
-
-    const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
-    const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
-    const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
-
-    arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);
-
+    csc_to_arma();
     return spsolve(arma_mat, in_mat);
 }
 
 template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_mat) {
-    triplet_to_csc();
-
-    const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
-    const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
-    const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
-
-    arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);
-
+    csc_to_arma();
     return spsolve(out_mat, arma_mat, in_mat) ? 0 : -1;
 }
 
