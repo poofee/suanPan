@@ -275,45 +275,27 @@ template <typename T> csc_form<T>::csc_form(triplet_form<T>& old_mat) { *this = 
 template <typename T> csc_form<T>::csc_form(triplet_form<T>&& old_mat) { *this = old_mat; }
 
 template <typename T> csc_form<T>& csc_form<T>::operator=(triplet_form<T>& in_mat) {
+    in_mat.csc_condense();
+
     init(in_mat.n_rows, in_mat.n_cols, in_mat.c_size);
-    in_mat.csc_sort();
 
-    // set column pointers to zero
-    for(uword I = 0; I <= n_cols; ++I) col_ptr[I] = 0;
+    if(in_mat.c_size == 0) return *this;
 
-    auto last_row = in_mat.row(0), last_col = in_mat.col(0);
+    access::rw(c_size) = in_mat.c_size;
 
-    uword current_pos = 0, pre_col = last_col;
+    auto bytes = in_mat.c_size * sizeof(uword);
+    memcpy(this->row_idx, in_mat.row_idx, bytes);
+    bytes = in_mat.c_size * sizeof(T);
+    memcpy(this->val_idx, in_mat.val_idx, bytes);
 
-    auto last_sum = 0.;
+    auto current_pos = 0, current_col = 0;
+    while(current_pos < in_mat.c_size)
+        if(in_mat.col_idx[current_pos] < current_col)
+            ++current_pos;
+        else
+            col_ptr[current_col++] = current_pos;
 
-    for(uword I = 0; I < in_mat.c_size; ++I) {
-        if(in_mat.row(I) != last_row || in_mat.col(I) != last_col) {
-            // now all components of the first element have been added up
-            if(last_sum != 0.) {
-                val_idx[current_pos] = last_sum;
-                row_idx[current_pos] = last_row;
-                // if the committed column index does not equal to the previous one
-                if(pre_col != last_col) col_ptr[pre_col = last_col] = current_pos;
-                last_sum = 0.;
-                ++current_pos;
-            }
-            // check in the position of next potential element if the first element is zero
-            last_row = in_mat.row(I);
-            last_col = in_mat.col(I);
-        }
-        last_sum += in_mat.val(I);
-    }
-
-    // check in the last element
-    if(last_sum != 0.) {
-        val_idx[current_pos] = last_sum;
-        row_idx[current_pos] = last_row;
-        col_ptr[n_cols] = ++current_pos;
-    } else
-        col_ptr[n_cols] = current_pos;
-
-    access::rw(c_size) = current_pos;
+    col_ptr[n_cols] = c_size;
 
     return *this;
 }
@@ -345,7 +327,7 @@ template <typename T> csc_form<T>& csc_form<T>::operator=(const csr_form<T>& in_
 
 template <typename T> const T& csc_form<T>::operator()(const uword in_row, const uword in_col) const {
     if(in_row < n_rows && in_col < n_cols)
-        for(auto I = col_ptr[in_col - 1]; I < col_ptr[in_col]; ++I)
+        for(auto I = col_ptr[in_col]; I < col_ptr[in_col + 1]; ++I)
             if(row_idx[I] == in_row) return val_idx[I];
 
     access::rw(bin) = 0.;
