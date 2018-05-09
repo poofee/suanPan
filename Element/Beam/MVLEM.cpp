@@ -16,53 +16,167 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "MVLEM.h"
-#include "Domain/DomainBase.h"
-#include "Material/Material.h"
+#include <Domain/DomainBase.h>
+#include <Domain/Node.h>
+#include <Material/Material.h>
 
 const unsigned MVLEM::b_node = 2;
 const unsigned MVLEM::b_dof = 3;
 
 MVLEM::Fibre::Fibre(const double B, const double H, const double R)
     : width(B)
-    , thickness(H)
+    , height(H)
     , c_area(B * H * (1. - R))
     , s_area(B * H * R) {}
 
-MVLEM::MVLEM(const unsigned T, const uvec& NT, const vec& B, const vec& H, const vec& R, const uvec& CRT, const uvec& STT, const unsigned SST)
+MVLEM::MVLEM(const unsigned T, const uvec& NT, const vector<double>& B, const vector<double>& H, const vector<double>& R, const uvec& CRT, const uvec& STT, const unsigned SST, const double CH)
     : MaterialElement(T, ET_MVLEM, b_node, b_dof, NT, join_cols(CRT, STT))
+    , shear_height(CH)
     , shear_spring_tag(SST) {
-    axial_spring.clear(), axial_spring.reserve(B.n_elem);
+    axial_spring.clear(), axial_spring.reserve(B.size());
     auto total_width = 0.;
-    for(auto I = 0; I < B.n_elem; ++I) {
-        axial_spring.emplace_back(B(I), H(I), R(I));
-        total_width += B(I);
-        total_area += B(I) * H(I);
+    for(size_t I = 0; I < B.size(); ++I) {
+        axial_spring.emplace_back(B[I], H[I], R[I]);
+        total_width += B[I];
+        total_area += B[I] * H[I];
     }
     total_width *= -.5;
-    for(auto I = 0; I < B.n_elem; ++I) axial_spring[I].eccentricity = total_width += .5 * axial_spring[I].width;
+    for(size_t I = 0; I < B.size(); ++I) axial_spring[I].eccentricity = total_width += .5 * axial_spring[I].width;
 }
 
 void MVLEM::initialize(const shared_ptr<DomainBase>& D) {
+    auto& coord_i = node_ptr.at(0).lock()->get_coordinate();
+    auto& coord_j = node_ptr.at(1).lock()->get_coordinate();
+
+    // chord vector
+    const vec pos_diff = coord_j(span(0, 2)) - coord_i(span(0, 2));
+    length = norm(pos_diff);
+
     const auto& total_fibre_num = axial_spring.size();
-    for(auto I = 0; I < total_fibre_num; ++I) {
+    for(size_t I = 0; I < total_fibre_num; ++I) {
         axial_spring[I].c_material = suanpan::make_copy(D->get_material(unsigned(material_tag(I))));
         axial_spring[I].s_material = suanpan::make_copy(D->get_material(unsigned(material_tag(I + total_fibre_num))));
     }
 
     shear_spring = suanpan::make_copy(D->get_material(shear_spring_tag));
+
+    // form initial stiffness
+    auto t_a = 0., t_b = 0., t_c = 0.;
+    for(const auto& I : axial_spring) {
+        auto t_stiff = I.c_material->get_initial_stiffness().at(0) * I.c_area + I.s_material->get_initial_stiffness().at(0) * I.s_area;
+        t_a += t_stiff;
+        t_b += t_stiff *= I.eccentricity;
+        t_c += t_stiff *= I.eccentricity;
+    }
+
+    t_a /= length, t_b /= length, t_c /= length;
+    initial_stiffness.zeros(6, 6);
+    initial_stiffness(1, 4) = -(initial_stiffness(1, 1) = initial_stiffness(4, 4) = t_a);
+    initial_stiffness(2, 5) = -(initial_stiffness(2, 2) = initial_stiffness(5, 5) = t_c);
+    initial_stiffness(1, 5) = initial_stiffness(2, 4) = -(initial_stiffness(1, 2) = initial_stiffness(4, 5) = t_b);
+
+    t_a = shear_height * length;
+    t_b = (shear_height - 1.) * length;
+    t_c = total_area / length * shear_spring->get_initial_stiffness().at(0);
+    const auto t_d = t_a * t_c;
+    const auto t_e = t_b * t_c;
+
+    initial_stiffness(0, 2) -= t_d;
+    initial_stiffness(2, 3) += t_d;
+    initial_stiffness(0, 3) -= t_c;
+    initial_stiffness(0, 5) += t_e;
+    initial_stiffness(3, 5) -= t_e;
+    initial_stiffness(2, 5) -= t_b * t_d;
+
+    initial_stiffness(0, 0) += t_c;
+    initial_stiffness(3, 3) += t_c;
+    initial_stiffness(2, 2) += t_a * t_d;
+    initial_stiffness(5, 5) += t_b * t_e;
+
+    for(auto I = 0; I < 5; ++I)
+        for(auto J = I + 1; J < 6; ++J) initial_stiffness(J, I) = initial_stiffness(I, J);
+
+    trial_stiffness = current_stiffness = initial_stiffness;
 }
 
-int MVLEM::update_status() { return 0; }
+int MVLEM::update_status() {
+    const auto& node_i = node_ptr.at(0).lock();
+    const auto& node_j = node_ptr.at(1).lock();
+
+    auto& disp_i = node_i->get_trial_displacement();
+    auto& disp_j = node_j->get_trial_displacement();
+
+    vec trial_disp(6);
+    for(unsigned I = 0; I < b_dof; ++I) {
+        trial_disp(I) = disp_i(I);
+        trial_disp(I + 3) = disp_j(I);
+    }
+
+    vec converter(6, fill::zeros);
+    converter(1) = -(converter(4) = 1.);
+
+    auto t_a = 0., t_b = 0., t_c = 0., t_d = 0., t_e = 0.;
+    for(const auto& I : axial_spring) {
+        converter(2) = -(converter(5) = I.eccentricity);
+        const auto trial_strain = dot(converter, trial_disp) / length;
+        I.c_material->update_trial_status(trial_strain);
+        I.s_material->update_trial_status(trial_strain);
+        auto t_stiff = I.c_material->get_trial_stiffness().at(0) * I.c_area + I.s_material->get_trial_stiffness().at(0) * I.s_area;
+        t_a += t_stiff;
+        t_b += t_stiff *= I.eccentricity;
+        t_c += t_stiff *= I.eccentricity;
+        const auto t_stress = I.c_material->get_trial_stress().at(0) * I.c_area + I.s_material->get_trial_stress().at(0) * I.s_area;
+        t_d += t_stress;
+        t_e += t_stress * I.eccentricity;
+    }
+
+    t_a /= length, t_b /= length, t_c /= length;
+    trial_stiffness.zeros(6, 6);
+    trial_stiffness(1, 4) = -(trial_stiffness(1, 1) = trial_stiffness(4, 4) = t_a);
+    trial_stiffness(2, 5) = -(trial_stiffness(2, 2) = trial_stiffness(5, 5) = t_c);
+    trial_stiffness(1, 5) = trial_stiffness(2, 4) = -(trial_stiffness(1, 2) = trial_stiffness(4, 5) = t_b);
+
+    converter.zeros();
+    converter(3) = -(converter(0) = 1.);
+    converter(2) = -(t_a = shear_height * length);
+    converter(5) = t_b = (shear_height - 1.) * length;
+
+    shear_spring->update_trial_status(dot(converter, trial_disp) / length);
+
+    trial_resistance.zeros(6);
+    trial_resistance(3) = -(trial_resistance(0) = shear_spring->get_trial_stress().at(0) * total_area);
+    trial_resistance(1) = -(trial_resistance(4) = t_d);
+    trial_resistance(2) = -t_a * trial_resistance(0) - t_e;
+    trial_resistance(5) = t_e + t_b * trial_resistance(0);
+
+    t_c = total_area / length * shear_spring->get_trial_stiffness().at(0);
+    t_d = t_a * t_c;
+    t_e = t_b * t_c;
+
+    trial_stiffness(0, 2) -= t_d;
+    trial_stiffness(2, 3) += t_d;
+    trial_stiffness(0, 3) -= t_c;
+    trial_stiffness(0, 5) += t_e;
+    trial_stiffness(3, 5) -= t_e;
+    trial_stiffness(2, 5) -= t_b * t_d;
+
+    trial_stiffness(0, 0) += t_c;
+    trial_stiffness(3, 3) += t_c;
+    trial_stiffness(2, 2) += t_a * t_d;
+    trial_stiffness(5, 5) += t_b * t_e;
+
+    for(auto I = 0; I < 5; ++I)
+        for(auto J = I + 1; J < 6; ++J) trial_stiffness(J, I) = trial_stiffness(I, J);
+
+    return SUANPAN_SUCCESS;
+}
 
 int MVLEM::commit_status() {
     auto code = 0;
 
     code += shear_spring->commit_status();
 
-    for(const auto& I : axial_spring) {
-        code += I.c_material->commit_status();
-        code += I.s_material->commit_status();
-    }
+    for(const auto& I : axial_spring) code += I.c_material->commit_status() + I.s_material->commit_status();
 
     return code;
 }
@@ -72,10 +186,7 @@ int MVLEM::clear_status() {
 
     code += shear_spring->clear_status();
 
-    for(const auto& I : axial_spring) {
-        code += I.c_material->clear_status();
-        code += I.s_material->clear_status();
-    }
+    for(const auto& I : axial_spring) code += I.c_material->clear_status() + I.s_material->clear_status();
 
     return code;
 }
@@ -85,10 +196,7 @@ int MVLEM::reset_status() {
 
     code += shear_spring->reset_status();
 
-    for(const auto& I : axial_spring) {
-        code += I.c_material->reset_status();
-        code += I.s_material->reset_status();
-    }
+    for(const auto& I : axial_spring) code += I.c_material->reset_status() + I.s_material->reset_status();
 
     return code;
 }

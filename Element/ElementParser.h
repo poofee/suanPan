@@ -39,6 +39,7 @@ void new_gcmq(unique_ptr<Element>&, istringstream&);
 void new_gcmt(unique_ptr<Element>&, istringstream&);
 void new_gq12(unique_ptr<Element>&, istringstream&);
 void new_mass(unique_ptr<Element>&, istringstream&);
+void new_mvlem(unique_ptr<Element>&, istringstream&);
 void new_ps(unique_ptr<Element>&, istringstream&);
 void new_qe2(unique_ptr<Element>&, istringstream&);
 void new_rcp4(unique_ptr<Element>&, istringstream&);

@@ -65,6 +65,8 @@ int create_new_element(const shared_ptr<DomainBase>& domain, istringstream& comm
         new_gq12(new_element, command);
     else if(is_equal(element_id, "Mass"))
         new_mass(new_element, command);
+    else if(is_equal(element_id, "MVLEM"))
+        new_mvlem(new_element, command);
     else if(is_equal(element_id, "PS"))
         new_ps(new_element, command);
     else if(is_equal(element_id, "QE2"))
@@ -838,6 +840,70 @@ void new_mass(unique_ptr<Element>& return_obj, istringstream& command) {
     while(get_input(command, dof)) dof_tag.push_back(dof);
 
     return_obj = make_unique<Mass>(tag, node, magnitude, uvec(dof_tag));
+}
+
+void new_mvlem(unique_ptr<Element>& return_obj, istringstream& command) {
+    unsigned tag;
+    if(!get_input(command, tag)) {
+        suanpan_debug("new_mvlem() needs a valid tag.\n");
+        return;
+    }
+
+    unsigned node;
+    vector<uword> node_tag;
+    for(auto I = 0; I < 2; ++I) {
+        if(!get_input(command, node)) {
+            suanpan_debug("new_mvlem() needs two valid nodes.\n");
+            return;
+        }
+        node_tag.push_back(node);
+    }
+
+    unsigned shear_tag;
+    if(!get_input(command, shear_tag)) {
+        suanpan_debug("new_mvlem() needs a valid shear material.\n");
+        return;
+    }
+
+    double c_height;
+    if(!get_input(command, c_height)) {
+        suanpan_debug("new_mvlem() needs a valid c.\n");
+        return;
+    }
+
+    vector<double> B, H, R;
+    vector<uword> CT, ST;
+    uword t_tag;
+    double t_value;
+    while(!command.eof()) {
+        if(!get_input(command, t_value)) {
+            suanpan_debug("new_mvlem() needs a valid fibre width.\n");
+            return;
+        }
+        B.emplace_back(t_value);
+        if(!get_input(command, t_value)) {
+            suanpan_debug("new_mvlem() needs a valid fibre thickness.\n");
+            return;
+        }
+        H.emplace_back(t_value);
+        if(!get_input(command, t_value)) {
+            suanpan_debug("new_mvlem() needs a valid fibre reinforcement ratio.\n");
+            return;
+        }
+        R.emplace_back(t_value);
+        if(!get_input(command, t_tag)) {
+            suanpan_debug("new_mvlem() needs a valid material tag.\n");
+            return;
+        }
+        CT.emplace_back(t_tag);
+        if(!get_input(command, t_tag)) {
+            suanpan_debug("new_mvlem() needs a valid material tag.\n");
+            return;
+        }
+        ST.emplace_back(t_tag);
+    }
+
+    return_obj = make_unique<MVLEM>(tag, uvec(node_tag), B, H, R, uvec(CT), uvec(ST), shear_tag, c_height);
 }
 
 void new_damper01(unique_ptr<Element>& return_obj, istringstream& command) {
