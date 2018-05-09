@@ -20,7 +20,7 @@
 
 const array<unsigned, 3> Bilinear2D::F = { 0, 1, 3 };
 
-Bilinear2D::Bilinear2D(const unsigned& T, const double& E, const double& V, const double& Y, const double& H, const double& B, const PlaneType& M, const double& D)
+Bilinear2D::Bilinear2D(const unsigned T, const double E, const double V, const double Y, const double H, const double B, const PlaneType M, const double D)
     : Material2D(T, MT_BILINEAR2D, M, D)
     , base(0, E, V, Y, H, B, D) {
     const auto EE = plane_type == PlaneType::S ? E : E / (1. - V * V);

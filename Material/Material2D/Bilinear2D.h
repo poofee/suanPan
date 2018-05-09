@@ -41,14 +41,14 @@ class Bilinear2D : public Material2D {
     Bilinear3D base;
 
 public:
-    explicit Bilinear2D(const unsigned& = 0, /**< tag */
-        const double& = 2E5,                 /**< elastic modulus */
-        const double& = .25,                 /**< poisson's ratio */
-        const double& = 400.,                /**< initial yield stress */
-        const double& = .05,                 /**< hardening ratio */
-        const double& = 0.,                  /**< isotropic/kinematic hardening factor */
-        const PlaneType& = PlaneType::S,     /**< plane stress or plane strain */
-        const double& = 0.                   /**< density */
+    explicit Bilinear2D(unsigned = 0, /**< tag */
+        double = 2E5,                 /**< elastic modulus */
+        double = .25,                 /**< poisson's ratio */
+        double = 400.,                /**< initial yield stress */
+        double = .05,                 /**< hardening ratio */
+        double = 0.,                  /**< isotropic/kinematic hardening factor */
+        PlaneType = PlaneType::S,     /**< plane stress or plane strain */
+        double = 0.                   /**< density */
     );
 
     void initialize(const shared_ptr<DomainBase>&) override;
