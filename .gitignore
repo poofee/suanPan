@@ -34,6 +34,7 @@ $RECYCLE.BIN/
 /MSVC/suanPan/Solver/x64/*
 /MSVC/suanPan/suanPan/x64/*
 /Libs/vs/magma.lib
+/Libs/vs/magma_sparse.lib
 
 # Windows shortcuts
 *.lnk
