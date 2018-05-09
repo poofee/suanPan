@@ -19,13 +19,14 @@
 #include <Toolbox/utility.h>
 
 Bilinear1D::Bilinear1D(const unsigned T, const double E, const double Y, const double H, const double B, const double R)
-    : Material1D(T, MT_BILINEAR1D, R)
-    , elastic_modulus(E)
-    , yield_stress(Y)
-    , hardening_ratio(H)
-    , beta(B)
-    , plastic_modulus(elastic_modulus * hardening_ratio / (1. - hardening_ratio))
-    , tolerance(1E-12) {}
+    : Material1D(T, MT_BILINEAR1D, R) {
+    elastic_modulus = E;
+    yield_stress = Y;
+    hardening_ratio = H;
+    beta = B;
+    plastic_modulus = elastic_modulus * hardening_ratio / (1. - hardening_ratio);
+    tolerance = 1E-12;
+}
 
 void Bilinear1D::initialize(const shared_ptr<DomainBase>&) {
     current_history.zeros(2);

@@ -30,15 +30,16 @@
 
 #include <Material/Material1D/Material1D.h>
 
-class Bilinear1D final : public Material1D {
-    const double elastic_modulus; /**< elastic modulus */
-    const double yield_stress;    /**< initial yield stress */
-    const double hardening_ratio; /**< hardening ratio */
-    const double beta;            /**< isotropic/kinematic hardening factor */
-    const double plastic_modulus; /**< plastic modulus */
+struct DataBilinear1D {
+    double elastic_modulus; /**< elastic modulus */
+    double yield_stress;    /**< initial yield stress */
+    double hardening_ratio; /**< hardening ratio */
+    double beta;            /**< isotropic/kinematic hardening factor */
+    double plastic_modulus; /**< plastic modulus */
+    double tolerance;       /**< tolerance */
+};
 
-    const double tolerance;
-
+class Bilinear1D final : DataBilinear1D, public Material1D {
 public:
     explicit Bilinear1D(unsigned = 0, /**< tag */
         double = 2E5,                 /**< elastic modulus */
