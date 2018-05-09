@@ -491,9 +491,27 @@ void new_concrete21(unique_ptr<Material>& return_obj, istringstream& command) {
         return;
     }
 
+    string tension_type = "linear";
+    if(!command.eof() && !get_input(command, tension_type)) {
+        suanpan_error("new_concrete21() requires a valid tension softening type.\n");
+        return;
+    }
+
     auto gf = 1E-2;
     if(!command.eof() && !get_input(command, gf)) {
         suanpan_error("new_concrete21() requires a valid fracture energy.\n");
+        return;
+    }
+
+    string poisson = "true";
+    if(!command.eof() && !get_input(command, poisson)) {
+        suanpan_error("new_concrete21() requires a valid poisson switch.\n");
+        return;
+    }
+
+    string degradation = "false";
+    if(!command.eof() && !get_input(command, degradation)) {
+        suanpan_error("new_concrete21() requires a valid degradation switch.\n");
         return;
     }
 
@@ -520,7 +538,19 @@ void new_concrete21(unique_ptr<Material>& return_obj, istringstream& command) {
         return;
     }
 
-    return_obj = make_unique<Concrete21>(tag, peak_c_stress, type, is_true(center_oriented), gf, density);
+    TensionType typea;
+    if(is_equal(tension_type, "EXP"))
+        typea = TensionType::EXPONENTIAL;
+    else if(is_equal(tension_type, "EXPONENTIAL"))
+        typea = TensionType::EXPONENTIAL;
+    else if(is_equal(tension_type, "LINEAR"))
+        typea = TensionType::LINEAR;
+    else {
+        suanpan_error("new_concrete01() cannot identify tension softening type.\n");
+        return;
+    }
+
+    return_obj = make_unique<Concrete21>(tag, peak_c_stress, type, is_true(center_oriented), typea, gf, is_true(poisson), is_true(degradation), density);
 }
 
 void new_concrete22(unique_ptr<Material>& return_obj, istringstream& command) {
@@ -551,6 +581,12 @@ void new_concrete22(unique_ptr<Material>& return_obj, istringstream& command) {
     string center_oriented = "false";
     if(!command.eof() && !get_input(command, center_oriented)) {
         suanpan_error("new_concrete22() requires a valid center oriented switch.\n");
+        return;
+    }
+
+    string tension_type = "linear";
+    if(!command.eof() && !get_input(command, tension_type)) {
+        suanpan_error("new_concrete21() requires a valid tension softening type.\n");
         return;
     }
 
@@ -595,7 +631,19 @@ void new_concrete22(unique_ptr<Material>& return_obj, istringstream& command) {
         return;
     }
 
-    return_obj = make_unique<Concrete22>(tag, peak_c_stress, type, shear_retention, is_true(center_oriented), gf, is_true(poisson), is_true(degradation), density);
+    TensionType typea;
+    if(is_equal(tension_type, "EXP"))
+        typea = TensionType::EXPONENTIAL;
+    else if(is_equal(tension_type, "EXPONENTIAL"))
+        typea = TensionType::EXPONENTIAL;
+    else if(is_equal(tension_type, "LINEAR"))
+        typea = TensionType::LINEAR;
+    else {
+        suanpan_error("new_concrete01() cannot identify tension softening type.\n");
+        return;
+    }
+
+    return_obj = make_unique<Concrete22>(tag, peak_c_stress, type, shear_retention, is_true(center_oriented), typea, gf, is_true(poisson), is_true(degradation), density);
 }
 
 void new_elastic1d(unique_ptr<Material>& return_obj, istringstream& command) {

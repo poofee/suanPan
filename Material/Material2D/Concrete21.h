@@ -37,9 +37,9 @@
 class Concrete21 : public Material2D {
     Concrete01 concrete_major, concrete_minor;
 
-    const bool degrade = true;
+    const bool poisson, degrade;
 
-    const double poissons_ratio = .2, peak_strain;
+    const double poissons_ratio = poisson ? .2 : 0., peak_strain;
 
     mat poissons_mat;
 
@@ -47,12 +47,15 @@ class Concrete21 : public Material2D {
     double shear_modulus = 0.;
 
 public:
-    Concrete21(unsigned, // tag
-        double,          // peak stress in negative
-        BackboneType,    // backbone type
-        bool = false,    // center oriented or using unloading criterion
-        double = 1E-2,   // factrue energy
-        double = 0.,     // density
+    Concrete21(unsigned,                   // tag
+        double,                            // peak stress in negative
+        BackboneType = BackboneType::TSAI, // backbone type
+        bool = false,                      // center oriented or using unloading criterion
+        TensionType = TensionType::LINEAR, // tension softening type
+        double = 1E-2,                     // factrue energy
+        bool = false,                      // poisson effect switch
+        bool = false,                      // stiffness degradation
+        double = 0.,                       // density
         PlaneType = PlaneType::S);
 
     void initialize(const shared_ptr<DomainBase>& = nullptr) override;

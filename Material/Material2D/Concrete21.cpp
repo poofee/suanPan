@@ -20,10 +20,12 @@
 #include <Toolbox/tensorToolbox.h>
 #include <Toolbox/utility.h>
 
-Concrete21::Concrete21(const unsigned T, const double PS, const BackboneType BB, const bool CO, const double FE, const double R, const PlaneType PT)
+Concrete21::Concrete21(const unsigned T, const double PS, const BackboneType BB, const bool CO, const TensionType TT, const double FE, const bool PO, const bool SD, const double R, const PlaneType PT)
     : Material2D(T, MT_CONCRETE21, PT, R)
-    , concrete_major(0, PS, BB, CO, false, TensionType::LINEAR, FE, R)
-    , concrete_minor(0, PS, BB, CO, false, TensionType::LINEAR, FE, R)
+    , concrete_major(0, PS, BB, CO, false, TT, FE, R)
+    , concrete_minor(0, PS, BB, CO, false, TT, FE, R)
+    , poisson(PO)
+    , degrade(SD)
     , peak_strain(-8.5E-4 * pow(abs(PS), .25) + datum::eps * 1E10) {}
 
 void Concrete21::initialize(const shared_ptr<DomainBase>& D) {
@@ -41,7 +43,7 @@ void Concrete21::initialize(const shared_ptr<DomainBase>& D) {
     trial_stiffness = current_stiffness = initial_stiffness;
 
     poissons_mat.eye(3, 3);
-    poissons_mat(0, 1) = poissons_mat(1, 0) = poissons_ratio * (poissons_mat(0, 0) = poissons_mat(1, 1) = 1. / (1. - poissons_ratio * poissons_ratio));
+    if(poisson) poissons_mat(0, 1) = poissons_mat(1, 0) = poissons_ratio * (poissons_mat(0, 0) = poissons_mat(1, 1) = 1. / (1. - poissons_ratio * poissons_ratio));
 
     trial_history = current_history.zeros(2);
 }
@@ -71,7 +73,7 @@ int Concrete21::update_trial_status(const vec& t_strain) {
     principal_angle = transform::strain::angle(trial_strain);
     const auto trans_mat = transform::strain::trans(principal_angle);
     const auto principal_strain = transform::strain::principal(trial_strain);
-    const vec uniaxial_strain = poissons_mat * principal_strain;
+    const auto uniaxial_strain = poisson ? poissons_mat * principal_strain : principal_strain;
 
     const auto& strain_11 = uniaxial_strain(0);
     const auto& strain_22 = uniaxial_strain(1);
@@ -112,7 +114,7 @@ int Concrete21::update_trial_status(const vec& t_strain) {
     // equation (9)
     const auto i_strain = 2. * (principal_strain(0) - principal_strain(1));
 
-    trial_stiffness(2, 2) = i_strain == 0. ? shear_modulus : (principal_stress(0) - principal_stress(1)) / i_strain;
+    trial_stiffness(2, 2) = abs(i_strain) < 1E-8 ? shear_modulus : (principal_stress(0) - principal_stress(1)) / i_strain;
 
     // transform back to nominal direction
     trial_stress = trans_mat.t() * principal_stress;

@@ -20,10 +20,10 @@
 #include <Toolbox/tensorToolbox.h>
 #include <Toolbox/utility.h>
 
-Concrete22::Concrete22(const unsigned T, const double PS, const BackboneType BB, const double SR, const bool CO, const double FE, const bool PO, const bool SD, const double R, const PlaneType PT)
+Concrete22::Concrete22(const unsigned T, const double PS, const BackboneType BB, const double SR, const bool CO, const TensionType TT, const double FE, const bool PO, const bool SD, const double R, const PlaneType PT)
     : Material2D(T, MT_CONCRETE22, PT, R)
-    , concrete_major(0, PS, BB, CO, false, TensionType::LINEAR, FE, R)
-    , concrete_minor(0, PS, BB, CO, false, TensionType::LINEAR, FE, R)
+    , concrete_major(0, PS, BB, CO, false, TT, FE, R)
+    , concrete_minor(0, PS, BB, CO, false, TT, FE, R)
     , poisson(PO)
     , degrade(SD)
     , shear_retention(SR)

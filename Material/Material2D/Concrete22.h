@@ -56,15 +56,16 @@ class Concrete22 : public Material2D {
     mat poissons_mat;
 
 public:
-    Concrete22(unsigned, // tag
-        double,          // peak stress in negative
-        BackboneType,    // backbone type
-        double = .2,     // shear retention
-        bool = false,    // center oriented or using unloading criterion
-        double = 1E-2,   // factrue energy
-        bool = false,    // poisson effect switch
-        bool = false,    // stiffness degradation
-        double = 0.,     // density
+    Concrete22(unsigned,                   // tag
+        double,                            // peak stress in negative
+        BackboneType = BackboneType::TSAI, // backbone type
+        double = .2,                       // shear retention
+        bool = false,                      // center oriented or using unloading criterion
+        TensionType = TensionType::LINEAR, // tension softening type
+        double = 1E-2,                     // factrue energy
+        bool = false,                      // poisson effect switch
+        bool = false,                      // stiffness degradation
+        double = 0.,                       // density
         PlaneType = PlaneType::S);
 
     void initialize(const shared_ptr<DomainBase>& = nullptr) override;
