@@ -578,6 +578,7 @@ template <typename T> void Factory<T>::initialize_mass() {
         break;
     case StorageScheme::SPARSE:
         global_mass = make_shared<SparseMat<T>>(n_size, n_size);
+        break;
     case StorageScheme::SPARSESYMM:
         global_mass = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
@@ -600,6 +601,7 @@ template <typename T> void Factory<T>::initialize_damping() {
         break;
     case StorageScheme::SPARSE:
         global_damping = make_shared<SparseMat<T>>(n_size, n_size);
+        break;
     case StorageScheme::SPARSESYMM:
         global_damping = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
@@ -622,6 +624,7 @@ template <typename T> void Factory<T>::initialize_stiffness() {
         break;
     case StorageScheme::SPARSE:
         global_stiffness = make_shared<SparseMat<T>>(n_size, n_size);
+        break;
     case StorageScheme::SPARSESYMM:
         global_stiffness = make_shared<SparseSymmMat<T>>(n_size, n_size);
         break;
