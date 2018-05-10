@@ -19,7 +19,6 @@
 #include "commandParser.h"
 #include <Step/Bead.h>
 #include <Toolbox/utility.h>
-#include <ctime>
 #include <suanPan.h>
 
 #ifdef SUANPAN_WIN
@@ -94,9 +93,8 @@ void print_header() {
 void print_version() {
     ostringstream version;
     version << SUANPAN_VERSION;
-    auto t_time = time(nullptr);
     suanpan_info("suanPan is an open source FEM framework.\n");
-    suanpan_info("\tversion Acrux 0.1.0\n\tcompiled with %s %s\n\tdate %s\n", SUANPAN_COMPILER, version.str().c_str(), asctime(gmtime(&t_time)));
+    suanpan_info("\tversion Acrux 0.1.0\n\tcompiled with %s %s\n\tdate %s\n", SUANPAN_COMPILER, version.str().c_str(), __DATE__);
     suanpan_info("[From Wikipedia] Alpha Crucis is a multiple star system located 321 light years from the Sun in the constellation of Crux and part of the asterism known as the Southern Cross.\n\n");
 }
 

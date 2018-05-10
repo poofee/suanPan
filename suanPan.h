@@ -175,6 +175,7 @@
 
 #ifdef SUANPAN_MAGMA
 #include <magma/magma_v2.h>
+#include <magma/magmasparse.h>
 #endif
 
 using namespace arma;

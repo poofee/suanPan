@@ -153,13 +153,70 @@ template <typename T> MetaMat<T>& SparseMat<T>::operator*=(const T scalar) {
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
-    csc_to_arma();
-    return spsolve(arma_mat, in_mat);
+    Mat<T> out_mat;
+    if(solve(out_mat, in_mat) != 0) out_mat.reset();
+    return out_mat;
 }
 
 template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_mat) {
+#ifdef SUANPAN_MAGMA
+    // set up a queue
+    magma_queue_t queue;
+    magma_queue_create(0, &queue);
+
+    // initialize options
+    magma_dopts options;
+
+    magma_dsolverinfo_init(&options.solver_par, &options.precond_par, queue);
+
+    options.input_format = Magma_CSR;
+    options.operation = Magma_SOLVE;
+    options.solver_par.solver = Magma_GMRES;
+    options.solver_par.atol = 1E-16;
+    options.solver_par.rtol = 1E-12;
+    options.solver_par.maxiter = 1000;
+    options.solver_par.restart = 50;
+    options.precond_par.solver = Magma_ILU;
+    options.precond_par.atol = 1E-16;
+    options.precond_par.rtol = 1E-12;
+
+    // the square matrix first
+    magma_d_matrix A, B, DA, DB, DX;
+
+    csr_form<T> csr_mat = triplet_mat;
+
+    auto l_row_ptr = new magma_int_t[csr_mat.n_rows + 1];
+    for(auto I = 0; I <= csr_mat.n_rows; ++I) l_row_ptr[I] = magma_int_t(csr_mat.row_ptr[I]);
+
+    auto l_col_idx = new magma_int_t[csr_mat.c_size];
+    for(auto I = 0; I < csr_mat.c_size; ++I) l_col_idx[I] = magma_int_t(csr_mat.col_idx[I]);
+
+    magma_dcsrset(magma_int_t(csr_mat.n_rows), magma_int_t(csr_mat.n_cols), l_row_ptr, l_col_idx, csr_mat.val_idx, &A, queue);
+
+    magma_dvset(magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), const_cast<double*>(in_mat.memptr()), &B, queue);
+
+    magma_dmtransfer(A, &DA, Magma_CPU, Magma_DEV, queue);
+    magma_dmtransfer(B, &DB, Magma_CPU, Magma_DEV, queue);
+
+    if(options.solver_par.solver != Magma_ITERREF) magma_d_precondsetup(DA, DB, &options.solver_par, &options.precond_par, queue);
+
+    magma_dvinit(&DX, Magma_DEV, magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), 0., queue);
+
+    const int code = magma_d_solver(DA, DB, &DX, &options, queue);
+
+    magma_dsolverinfo(&options.solver_par, &options.precond_par, queue);
+
+    out_mat.resize(in_mat.n_rows, in_mat.n_cols);
+
+    magma_dvget(DX, &DX.num_rows, &DX.num_cols, const_cast<double**>(&out_mat.mem), queue);
+
+    delete[] l_row_ptr, l_col_idx;
+
+    return code;
+#else
     csc_to_arma();
     return spsolve(out_mat, arma_mat, in_mat) ? 0 : -1;
+#endif
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve_trs(const Mat<T>& in_mat) { return solve(in_mat); }

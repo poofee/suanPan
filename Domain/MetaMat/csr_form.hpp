@@ -69,11 +69,11 @@ public:
     template <typename T2> csr_form<T>& operator*=(T2);
     template <typename T2> csr_form<T>& operator/=(T2);
 
-    explicit csr_form(triplet_form<T>&);
-    explicit csr_form(triplet_form<T>&&);
-    csr_form& operator=(triplet_form<T>&);
+    csr_form(triplet_form<T>&);
+    csr_form(triplet_form<T>&&);
+    csr_form& operator=(const triplet_form<T>&);
 
-    explicit csr_form(const csc_form<T>&);
+    csr_form(const csc_form<T>&);
     csr_form& operator=(const csc_form<T>&);
 
     const T& operator()(uword, uword) const;
@@ -274,7 +274,7 @@ template <typename T> csr_form<T>::csr_form(triplet_form<T>& old_mat) { *this = 
 
 template <typename T> csr_form<T>::csr_form(triplet_form<T>&& old_mat) { *this = old_mat; }
 
-template <typename T> csr_form<T>& csr_form<T>::operator=(triplet_form<T>& in_mat) {
+template <typename T> csr_form<T>& csr_form<T>::operator=(const triplet_form<T>& in_mat) {
     in_mat.csr_condense();
 
     init(in_mat.n_rows, in_mat.n_cols, in_mat.c_size);
