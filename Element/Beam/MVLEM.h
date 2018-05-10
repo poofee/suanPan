@@ -32,7 +32,7 @@
 #include <Element/MaterialElement.h>
 
 class MVLEM final : public MaterialElement {
-    static const unsigned b_node, b_dof;
+    static const unsigned b_node, b_dof, b_size;
 
     struct Fibre {
         double eccentricity = 0., width, height, c_area, s_area;
@@ -42,7 +42,11 @@ class MVLEM final : public MaterialElement {
 
     double shear_height;
     double length = 0.;
+    double shear_height_a = 0.;
+    double shear_height_b = 0.;
     double total_area = 0.;
+
+    mat trans_mat;
 
     vector<Fibre> axial_spring;
 

@@ -22,6 +22,7 @@
 
 const unsigned MVLEM::b_node = 2;
 const unsigned MVLEM::b_dof = 3;
+const unsigned MVLEM::b_size = b_node * b_dof;
 
 MVLEM::Fibre::Fibre(const double B, const double H, const double R)
     : width(B)
@@ -34,14 +35,17 @@ MVLEM::MVLEM(const unsigned T, const uvec& NT, const vector<double>& B, const ve
     , shear_height(CH)
     , shear_spring_tag(SST) {
     axial_spring.clear(), axial_spring.reserve(B.size());
-    auto total_width = 0.;
+    auto width_indicator = 0.;
     for(size_t I = 0; I < B.size(); ++I) {
         axial_spring.emplace_back(B[I], H[I], R[I]);
-        total_width += B[I];
+        width_indicator += B[I];
         total_area += B[I] * H[I];
     }
-    total_width *= -.5;
-    for(size_t I = 0; I < B.size(); ++I) axial_spring[I].eccentricity = total_width += .5 * axial_spring[I].width;
+    width_indicator *= -.5;
+    for(size_t I = 0; I < B.size(); ++I) {
+        axial_spring[I].eccentricity = width_indicator + .5 * axial_spring[I].width;
+        width_indicator += axial_spring[I].width;
+    }
 }
 
 void MVLEM::initialize(const shared_ptr<DomainBase>& D) {
@@ -49,8 +53,15 @@ void MVLEM::initialize(const shared_ptr<DomainBase>& D) {
     auto& coord_j = node_ptr.at(1).lock()->get_coordinate();
 
     // chord vector
-    const vec pos_diff = coord_j(span(0, 2)) - coord_i(span(0, 2));
+    const vec pos_diff = coord_j(span(0, 1)) - coord_i(span(0, 1));
     length = norm(pos_diff);
+    shear_height_a = shear_height * length;
+    shear_height_b = shear_height_a - length;
+
+    trans_mat.zeros(6, 6);
+    trans_mat(2, 2) = trans_mat(5, 5) = 1.;
+    trans_mat(0, 0) = trans_mat(1, 1) = trans_mat(3, 3) = trans_mat(4, 4) = pos_diff(1) / length;
+    trans_mat(0, 1) = trans_mat(3, 4) = -(trans_mat(1, 0) = trans_mat(4, 3) = pos_diff(0)) / length;
 
     const auto& total_fibre_num = axial_spring.size();
     for(size_t I = 0; I < total_fibre_num; ++I) {
@@ -69,32 +80,33 @@ void MVLEM::initialize(const shared_ptr<DomainBase>& D) {
         t_c += t_stiff *= I.eccentricity;
     }
 
-    t_a /= length, t_b /= length, t_c /= length;
     initial_stiffness.zeros(6, 6);
+
+    t_a /= length, t_b /= length, t_c /= length;
     initial_stiffness(1, 4) = -(initial_stiffness(1, 1) = initial_stiffness(4, 4) = t_a);
     initial_stiffness(2, 5) = -(initial_stiffness(2, 2) = initial_stiffness(5, 5) = t_c);
     initial_stiffness(1, 5) = initial_stiffness(2, 4) = -(initial_stiffness(1, 2) = initial_stiffness(4, 5) = t_b);
 
-    t_a = shear_height * length;
-    t_b = (shear_height - 1.) * length;
     t_c = total_area / length * shear_spring->get_initial_stiffness().at(0);
-    const auto t_d = t_a * t_c;
-    const auto t_e = t_b * t_c;
+    t_a = shear_height_a * t_c;
+    t_b = shear_height_b * t_c;
 
-    initial_stiffness(0, 2) -= t_d;
-    initial_stiffness(2, 3) += t_d;
+    initial_stiffness(0, 2) -= t_a;
+    initial_stiffness(2, 3) += t_a;
     initial_stiffness(0, 3) -= t_c;
-    initial_stiffness(0, 5) += t_e;
-    initial_stiffness(3, 5) -= t_e;
-    initial_stiffness(2, 5) -= t_b * t_d;
+    initial_stiffness(0, 5) += t_b;
+    initial_stiffness(3, 5) -= t_b;
+    initial_stiffness(2, 5) -= shear_height_b * t_a;
 
     initial_stiffness(0, 0) += t_c;
     initial_stiffness(3, 3) += t_c;
-    initial_stiffness(2, 2) += t_a * t_d;
-    initial_stiffness(5, 5) += t_b * t_e;
+    initial_stiffness(2, 2) += shear_height_a * t_a;
+    initial_stiffness(5, 5) += shear_height_b * t_b;
 
     for(auto I = 0; I < 5; ++I)
         for(auto J = I + 1; J < 6; ++J) initial_stiffness(J, I) = initial_stiffness(I, J);
+
+    initial_stiffness = trans_mat.t() * initial_stiffness * trans_mat;
 
     trial_stiffness = current_stiffness = initial_stiffness;
 }
@@ -111,6 +123,8 @@ int MVLEM::update_status() {
         trial_disp(I) = disp_i(I);
         trial_disp(I + 3) = disp_j(I);
     }
+    // local displacement
+    trial_disp = trans_mat * trial_disp;
 
     vec converter(6, fill::zeros);
     converter(1) = -(converter(4) = 1.);
@@ -130,43 +144,48 @@ int MVLEM::update_status() {
         t_e += t_stress * I.eccentricity;
     }
 
-    t_a /= length, t_b /= length, t_c /= length;
     trial_stiffness.zeros(6, 6);
+
+    t_a /= length, t_b /= length, t_c /= length;
     trial_stiffness(1, 4) = -(trial_stiffness(1, 1) = trial_stiffness(4, 4) = t_a);
     trial_stiffness(2, 5) = -(trial_stiffness(2, 2) = trial_stiffness(5, 5) = t_c);
     trial_stiffness(1, 5) = trial_stiffness(2, 4) = -(trial_stiffness(1, 2) = trial_stiffness(4, 5) = t_b);
 
     converter.zeros();
     converter(3) = -(converter(0) = 1.);
-    converter(2) = -(t_a = shear_height * length);
-    converter(5) = t_b = (shear_height - 1.) * length;
+    converter(2) = -shear_height_a;
+    converter(5) = shear_height_b;
 
     shear_spring->update_trial_status(dot(converter, trial_disp) / length);
 
     trial_resistance.zeros(6);
     trial_resistance(3) = -(trial_resistance(0) = shear_spring->get_trial_stress().at(0) * total_area);
     trial_resistance(1) = -(trial_resistance(4) = t_d);
-    trial_resistance(2) = -t_a * trial_resistance(0) - t_e;
-    trial_resistance(5) = t_e + t_b * trial_resistance(0);
+    trial_resistance(2) = -shear_height_a * trial_resistance(0) - t_e;
+    trial_resistance(5) = t_e + shear_height_b * trial_resistance(0);
 
     t_c = total_area / length * shear_spring->get_trial_stiffness().at(0);
-    t_d = t_a * t_c;
-    t_e = t_b * t_c;
+    t_d = shear_height_a * t_c;
+    t_e = shear_height_b * t_c;
 
     trial_stiffness(0, 2) -= t_d;
     trial_stiffness(2, 3) += t_d;
     trial_stiffness(0, 3) -= t_c;
     trial_stiffness(0, 5) += t_e;
     trial_stiffness(3, 5) -= t_e;
-    trial_stiffness(2, 5) -= t_b * t_d;
+    trial_stiffness(2, 5) -= shear_height_b * t_d;
 
     trial_stiffness(0, 0) += t_c;
     trial_stiffness(3, 3) += t_c;
-    trial_stiffness(2, 2) += t_a * t_d;
-    trial_stiffness(5, 5) += t_b * t_e;
+    trial_stiffness(2, 2) += shear_height_a * t_d;
+    trial_stiffness(5, 5) += shear_height_b * t_e;
 
     for(auto I = 0; I < 5; ++I)
         for(auto J = I + 1; J < 6; ++J) trial_stiffness(J, I) = trial_stiffness(I, J);
+
+    // transform back to the gloabl coordinate system
+    trial_stiffness = trans_mat.t() * trial_stiffness * trans_mat;
+    trial_resistance = trans_mat.t() * trial_resistance;
 
     return SUANPAN_SUCCESS;
 }
