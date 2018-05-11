@@ -112,7 +112,7 @@ template <typename T> void SparseMat<T>::csc_to_arma() {
 
     const uvec row_idx(csc_mat.row_idx, csc_mat.c_size, false, false);
     const uvec col_ptr(csc_mat.col_ptr, csc_mat.n_cols + 1, false, false);
-    const Col<double> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
+    const Col<T> val_idx(csc_mat.val_idx, csc_mat.c_size, false, false);
 
     arma_mat = SpMat<T>(row_idx, col_ptr, val_idx, csc_mat.n_rows, csc_mat.n_cols);
 }
@@ -131,12 +131,12 @@ template <typename T> MetaMat<T> SparseMat<T>::operator-(const MetaMat<T>& in_ma
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator+=(const MetaMat<T>& in_mat) {
     arma_mat += dynamic_cast<const SparseMat<T>&>(in_mat).arma_mat;
-    return dynamic_cast<MetaMat<T>&>(*this);
+    return this;
 }
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator-=(const MetaMat<T>& in_mat) {
     arma_mat -= dynamic_cast<const SparseMat<T>&>(in_mat).arma_mat;
-    return dynamic_cast<MetaMat<T>&>(*this);
+    return this;
 }
 
 template <typename T> MetaMat<T> SparseMat<T>::operator*(const T scalar) {
@@ -149,7 +149,7 @@ template <typename T> Mat<T> SparseMat<T>::operator*(const Mat<T>& in_mat) { ret
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator*=(const T scalar) {
     arma_mat *= scalar;
-    return dynamic_cast<MetaMat<T>&>(*this);
+    return this;
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
@@ -160,77 +160,8 @@ template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
 
 template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_mat) {
 #ifdef SUANPAN_MAGMA
-    // set up a queue
-    magma_queue_t queue;
-    magma_queue_create(0, &queue);
-
-    // initialize options
-    magma_dopts options;
-
-    options.scaling = Magma_NOSCALE;
-    options.solver_par.solver = Magma_PGMRES;
-    options.solver_par.atol = 1E-10;
-    options.solver_par.rtol = 1E-10;
-    options.solver_par.restart = 100;
-    options.solver_par.maxiter = 1000;
-    options.precond_par.solver = Magma_ILU;
-    options.precond_par.trisolver = Magma_JACOBI;
-    options.precond_par.atol = 1E-10;
-    options.precond_par.rtol = 1E-10;
-    options.input_format = Magma_CSR;
-    options.output_format = Magma_CSR;
-    options.input_location = Magma_DEV;
-    options.output_location = Magma_DEV;
-    options.solver_par.verbose = 0;
-    options.solver_par.version = 0;
-
-    magma_dsolverinfo_init(&options.solver_par, &options.precond_par, queue);
-
-    magma_d_matrix A_cpu{ Magma_CSR }, B_cpu{ Magma_CSR }, A_gpu{ Magma_CSR }, B_gpu{ Magma_CSR }, X{ Magma_CSR };
-
-    // set up matrix on cpu
-    csr_form<T> csr_mat = triplet_mat;
-    magma_index_t* l_row_ptr;
-    magma_index_malloc_cpu(&l_row_ptr, csr_mat.n_rows + 1);
-    for(auto I = 0; I <= csr_mat.n_rows; ++I) l_row_ptr[I] = magma_int_t(csr_mat.row_ptr[I]);
-    magma_index_t* l_col_idx;
-    magma_index_malloc_cpu(&l_col_idx, csr_mat.c_size);
-    for(auto I = 0; I < csr_mat.c_size; ++I) l_col_idx[I] = magma_int_t(csr_mat.col_idx[I]);
-    double* l_val_idx;
-    magma_dmalloc_cpu(&l_val_idx, csr_mat.c_size);
-    for(auto I = 0; I < csr_mat.c_size; ++I) l_val_idx[I] = csr_mat.val_idx[I];
-    magma_dcsrset(magma_int_t(csr_mat.n_rows), magma_int_t(csr_mat.n_cols), l_row_ptr, l_col_idx, l_val_idx, &A_cpu, queue);
-
-    if(options.solver_par.solver != Magma_ITERREF) magma_d_precondsetup(A_cpu, B_gpu, &options.solver_par, &options.precond_par, queue);
-
-    magma_dmtransfer(A_cpu, &A_gpu, Magma_CPU, Magma_DEV, queue);
-
-    // right hand side
-    double* l_b;
-    magma_dmalloc_cpu(&l_b, in_mat.n_elem);
-    for(auto I = 0; I < in_mat.n_elem; ++I) l_b[I] = in_mat[I];
-    magma_dvset(magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), l_b, &B_cpu, queue);
-    magma_dmtransfer(B_cpu, &B_gpu, Magma_CPU, Magma_DEV, queue);
-
-    magma_dvinit(&X, Magma_DEV, magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), 0., queue);
-
-    const int code = magma_d_solver(A_gpu, B_gpu, &X, &options, queue);
-
-    magma_dsolverinfo(&options.solver_par, &options.precond_par, queue);
-
-    out_mat.resize(in_mat.n_rows, in_mat.n_cols);
-
-    magma_dvget(X, l_row_ptr, l_row_ptr, &l_b, queue);
-
-    for(auto I = 0; I < in_mat.n_elem; ++I) out_mat[I] = l_b[I];
-
-    magma_dmfree(&A_cpu, queue);
-    magma_dmfree(&A_gpu, queue);
-    magma_dmfree(&B_cpu, queue);
-    magma_dmfree(&B_gpu, queue);
-    magma_dmfree(&X, queue);
-
-    return code;
+    csc_to_arma();
+    return spsolve(out_mat, arma_mat, in_mat) ? 0 : -1;
 #else
     csc_to_arma();
     return spsolve(out_mat, arma_mat, in_mat) ? 0 : -1;
