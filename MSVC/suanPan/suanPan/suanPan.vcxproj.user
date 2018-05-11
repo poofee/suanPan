@@ -8,12 +8,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release-GPU|x64'">
     <LocalDebuggerWorkingDirectory>..\..\..\Example</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-f CPS4N100</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-f TRUSS</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>..\..\..\Example</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>-f MVLEM</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>-f TRUSS</LocalDebuggerCommandArguments>
   </PropertyGroup>
   <PropertyGroup>
     <ShowAllFiles>false</ShowAllFiles>

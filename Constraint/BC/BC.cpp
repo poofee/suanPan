@@ -138,24 +138,42 @@ const uvec& BC::get_dof() const { return dofs; }
 int BC::process(const shared_ptr<DomainBase>& D) {
     auto& t_matrix = get_stiffness(D->get_factory());
 
-    auto& t_set_b = D->get_constrained_dof();
+    if(D->get_factory()->get_storage_scheme() == StorageScheme::SPARSE || D->get_factory()->get_storage_scheme() == StorageScheme::SPARSESYMM) {
+        const auto max_term = multiplier * t_matrix.max();
 
-    for(const auto& I : nodes) {
-        auto& t_node = D->get_node(static_cast<unsigned>(I));
-        if(t_node != nullptr && t_node->is_active()) {
-            auto& t_dof = t_node->get_reordered_dof();
-            for(const auto& J : dofs)
-                if(J <= t_dof.n_elem) {
-                    auto& t_idx = t_dof(J - 1);
-                    if(D->insert_restrained_dof(static_cast<unsigned>(t_idx))) {
-                        if(t_matrix(t_idx, t_idx) == 0) {
-                            auto& t_set = D->get_restrained_dof();
-                            t_matrix.at(t_idx, t_idx) = t_set.size() == 1 ? t_set_b.empty() ? multiplier * t_matrix.max() : t_matrix(*t_set_b.cbegin(), *t_set_b.cbegin()) : *t_set.cbegin() == t_idx ? t_matrix(*++t_set.cbegin(), *++t_set.cbegin()) : t_matrix(*t_set.cbegin(), *t_set.cbegin());
-                        } else
-                            t_matrix.at(t_idx, t_idx) = multiplier * t_matrix(t_idx, t_idx);
-                    }
+        for(const auto& I : nodes)
+            if(D->find_node(unsigned(I))) {
+                auto& t_node = D->get_node(unsigned(I));
+                if(t_node->is_active()) {
+                    auto& t_dof = t_node->get_reordered_dof();
+                    for(const auto& J : dofs)
+                        if(J <= t_dof.n_elem) {
+                            auto& t_idx = t_dof(J - 1);
+                            if(D->insert_restrained_dof(unsigned(t_idx))) t_matrix.at(t_idx, t_idx) = max_term;
+                        }
                 }
-        }
+            }
+    } else {
+        auto& t_set_b = D->get_constrained_dof();
+
+        for(const auto& I : nodes)
+            if(D->find_node(unsigned(I))) {
+                auto& t_node = D->get_node(unsigned(I));
+                if(t_node->is_active()) {
+                    auto& t_dof = t_node->get_reordered_dof();
+                    for(const auto& J : dofs)
+                        if(J <= t_dof.n_elem) {
+                            auto& t_idx = t_dof(J - 1);
+                            if(D->insert_restrained_dof(unsigned(t_idx))) {
+                                if(t_matrix(t_idx, t_idx) == 0) {
+                                    auto& t_set = D->get_restrained_dof();
+                                    t_matrix.at(t_idx, t_idx) = t_set.size() == 1 ? t_set_b.empty() ? multiplier * t_matrix.max() : t_matrix(*t_set_b.cbegin(), *t_set_b.cbegin()) : *t_set.cbegin() == t_idx ? t_matrix(*++t_set.cbegin(), *++t_set.cbegin()) : t_matrix(*t_set.cbegin(), *t_set.cbegin());
+                                } else
+                                    t_matrix.at(t_idx, t_idx) = multiplier * t_matrix(t_idx, t_idx);
+                            }
+                        }
+                }
+            }
     }
 
     return 0;

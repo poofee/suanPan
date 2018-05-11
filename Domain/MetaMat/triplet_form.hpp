@@ -298,7 +298,7 @@ template <typename T> bool triplet_form<T>::resize(const uword in_row, const uwo
 }
 
 template <typename T> void triplet_form<T>::print() const {
-    suanpan_info("A sparse matrix in triplet form with size of %u by %u, the sparsity of %.3f.\n", unsigned(n_rows), unsigned(n_cols), double(c_size) / double(n_rows * n_cols) * 100.);
+    suanpan_info("A sparse matrix in triplet form with size of %u by %u, the density of %.3f.\n", unsigned(n_rows), unsigned(n_cols), double(c_size) / double(n_rows * n_cols) * 100.);
     if(c_size > 1000) {
         suanpan_info("Not going to print all elements as more than 1000 elements exist.\n");
         return;

@@ -167,50 +167,57 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
     // initialize options
     magma_dopts options;
 
+    auto i = 1;
+    char* tmp_b = "0";
+    magma_dparse_opts(0, &tmp_b, &options, &i, queue);
+
     magma_dsolverinfo_init(&options.solver_par, &options.precond_par, queue);
 
-    options.input_format = Magma_CSR;
-    options.operation = Magma_SOLVE;
-    options.solver_par.solver = Magma_GMRES;
-    options.solver_par.atol = 1E-16;
-    options.solver_par.rtol = 1E-12;
-    options.solver_par.maxiter = 1000;
-    options.solver_par.restart = 50;
-    options.precond_par.solver = Magma_ILU;
-    options.precond_par.atol = 1E-16;
-    options.precond_par.rtol = 1E-12;
+    magma_d_matrix A_cpu = { Magma_CSR, Magma_CPU }, A_gpu = { Magma_CSR }, X = { Magma_CSR }, B_cpu = { Magma_CSR }, B_gpu = { Magma_CSR };
 
-    // the square matrix first
-    magma_d_matrix A, B, DA, DB, DX;
-
+    // set up matrix on cpu
     csr_form<T> csr_mat = triplet_mat;
-
-    auto l_row_ptr = new magma_int_t[csr_mat.n_rows + 1];
+    csr_mat.print();
+    magma_index_t* l_row_ptr;
+    magma_index_malloc_cpu(&l_row_ptr, csr_mat.n_rows + 1);
     for(auto I = 0; I <= csr_mat.n_rows; ++I) l_row_ptr[I] = magma_int_t(csr_mat.row_ptr[I]);
-
-    auto l_col_idx = new magma_int_t[csr_mat.c_size];
+    magma_index_t* l_col_idx;
+    magma_index_malloc_cpu(&l_col_idx, csr_mat.c_size);
     for(auto I = 0; I < csr_mat.c_size; ++I) l_col_idx[I] = magma_int_t(csr_mat.col_idx[I]);
+    double* l_val_idx;
+    magma_dmalloc_cpu(&l_val_idx, csr_mat.c_size);
+    for(auto I = 0; I < csr_mat.c_size; ++I) l_val_idx[I] = csr_mat.val_idx[I];
+    magma_dcsrset(magma_int_t(csr_mat.n_rows), magma_int_t(csr_mat.n_cols), l_row_ptr, l_col_idx, l_val_idx, &A_cpu, queue);
 
-    magma_dcsrset(magma_int_t(csr_mat.n_rows), magma_int_t(csr_mat.n_cols), l_row_ptr, l_col_idx, csr_mat.val_idx, &A, queue);
+    if(options.solver_par.solver != Magma_ITERREF) magma_d_precondsetup(A_cpu, B_gpu, &options.solver_par, &options.precond_par, queue);
 
-    magma_dvset(magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), const_cast<double*>(in_mat.memptr()), &B, queue);
+    magma_dmtransfer(A_cpu, &A_gpu, Magma_CPU, Magma_DEV, queue);
 
-    magma_dmtransfer(A, &DA, Magma_CPU, Magma_DEV, queue);
-    magma_dmtransfer(B, &DB, Magma_CPU, Magma_DEV, queue);
+    double* l_b;
+    magma_dmalloc_cpu(&l_b, in_mat.n_elem);
+    for(auto I = 0; I < in_mat.n_elem; ++I) l_b[I] = in_mat[I];
 
-    if(options.solver_par.solver != Magma_ITERREF) magma_d_precondsetup(DA, DB, &options.solver_par, &options.precond_par, queue);
+    magma_dvset(magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), l_b, &B_cpu, queue);
 
-    magma_dvinit(&DX, Magma_DEV, magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), 0., queue);
+    magma_dmtransfer(B_cpu, &B_gpu, Magma_CPU, Magma_DEV, queue);
 
-    const int code = magma_d_solver(DA, DB, &DX, &options, queue);
+    magma_dmtransfer(B_cpu, &X, Magma_CPU, Magma_DEV, queue);
+
+    const int code = magma_d_solver(A_gpu, B_gpu, &X, &options, queue);
 
     magma_dsolverinfo(&options.solver_par, &options.precond_par, queue);
 
     out_mat.resize(in_mat.n_rows, in_mat.n_cols);
 
-    magma_dvget(DX, &DX.num_rows, &DX.num_cols, const_cast<double**>(&out_mat.mem), queue);
+    magma_dvget(X, &i, &i, &l_b, queue);
 
-    delete[] l_row_ptr, l_col_idx;
+    for(auto I = 0; I < in_mat.n_elem; ++I) out_mat[I] = l_b[I];
+
+    magma_dmfree(&A_cpu, queue);
+    magma_dmfree(&A_gpu, queue);
+    magma_dmfree(&B_cpu, queue);
+    magma_dmfree(&B_gpu, queue);
+    magma_dmfree(&X, queue);
 
     return code;
 #else
