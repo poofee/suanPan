@@ -131,12 +131,12 @@ template <typename T> MetaMat<T> SparseMat<T>::operator-(const MetaMat<T>& in_ma
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator+=(const MetaMat<T>& in_mat) {
     arma_mat += dynamic_cast<const SparseMat<T>&>(in_mat).arma_mat;
-    return this;
+    return dynamic_cast<MetaMat<T>&>(*this);
 }
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator-=(const MetaMat<T>& in_mat) {
     arma_mat -= dynamic_cast<const SparseMat<T>&>(in_mat).arma_mat;
-    return this;
+    return dynamic_cast<MetaMat<T>&>(*this);
 }
 
 template <typename T> MetaMat<T> SparseMat<T>::operator*(const T scalar) {
@@ -149,7 +149,7 @@ template <typename T> Mat<T> SparseMat<T>::operator*(const Mat<T>& in_mat) { ret
 
 template <typename T> MetaMat<T>& SparseMat<T>::operator*=(const T scalar) {
     arma_mat *= scalar;
-    return this;
+    return dynamic_cast<MetaMat<T>&>(*this);
 }
 
 template <typename T> Mat<T> SparseMat<T>::solve(const Mat<T>& in_mat) {
