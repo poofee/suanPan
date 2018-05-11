@@ -171,13 +171,21 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
     char* tmp_b = "0";
     magma_dparse_opts(0, &tmp_b, &options, &i, queue);
 
+    options.solver_par.solver = Magma_PCG;
+    options.solver_par.atol = 1E-8;
+    options.solver_par.rtol = 1E-8;
+    options.solver_par.restart = 50;
+    options.precond_par.solver = Magma_JACOBI;
+    options.precond_par.trisolver = Magma_JACOBI;
+    options.precond_par.atol = 1E-8;
+    options.precond_par.rtol = 1E-8;
+
     magma_dsolverinfo_init(&options.solver_par, &options.precond_par, queue);
 
-    magma_d_matrix A_cpu = { Magma_CSR, Magma_CPU }, A_gpu = { Magma_CSR }, X = { Magma_CSR }, B_cpu = { Magma_CSR }, B_gpu = { Magma_CSR };
+    magma_d_matrix A_cpu = { Magma_CSR }, B_cpu = { Magma_CSR }, A_gpu, B_gpu = { Magma_CSR }, X;
 
     // set up matrix on cpu
     csr_form<T> csr_mat = triplet_mat;
-    csr_mat.print();
     magma_index_t* l_row_ptr;
     magma_index_malloc_cpu(&l_row_ptr, csr_mat.n_rows + 1);
     for(auto I = 0; I <= csr_mat.n_rows; ++I) l_row_ptr[I] = magma_int_t(csr_mat.row_ptr[I]);
@@ -201,7 +209,7 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
 
     magma_dmtransfer(B_cpu, &B_gpu, Magma_CPU, Magma_DEV, queue);
 
-    magma_dmtransfer(B_cpu, &X, Magma_CPU, Magma_DEV, queue);
+    magma_dvinit(&X, Magma_DEV, magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), 0., queue);
 
     const int code = magma_d_solver(A_gpu, B_gpu, &X, &options, queue);
 
