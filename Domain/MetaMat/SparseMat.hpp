@@ -167,22 +167,26 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
     // initialize options
     magma_dopts options;
 
-    auto i = 1;
-    char* tmp_b = "0";
-    magma_dparse_opts(0, &tmp_b, &options, &i, queue);
-
-    options.solver_par.solver = Magma_PCG;
-    options.solver_par.atol = 1E-8;
-    options.solver_par.rtol = 1E-8;
-    options.solver_par.restart = 50;
-    options.precond_par.solver = Magma_JACOBI;
+    options.scaling = Magma_NOSCALE;
+    options.solver_par.solver = Magma_PGMRES;
+    options.solver_par.atol = 1E-10;
+    options.solver_par.rtol = 1E-10;
+    options.solver_par.restart = 100;
+    options.solver_par.maxiter = 1000;
+    options.precond_par.solver = Magma_ILU;
     options.precond_par.trisolver = Magma_JACOBI;
-    options.precond_par.atol = 1E-8;
-    options.precond_par.rtol = 1E-8;
+    options.precond_par.atol = 1E-10;
+    options.precond_par.rtol = 1E-10;
+    options.input_format = Magma_CSR;
+    options.output_format = Magma_CSR;
+    options.input_location = Magma_DEV;
+    options.output_location = Magma_DEV;
+    options.solver_par.verbose = 0;
+    options.solver_par.version = 0;
 
     magma_dsolverinfo_init(&options.solver_par, &options.precond_par, queue);
 
-    magma_d_matrix A_cpu = { Magma_CSR }, B_cpu = { Magma_CSR }, A_gpu, B_gpu = { Magma_CSR }, X;
+    magma_d_matrix A_cpu{ Magma_CSR }, B_cpu{ Magma_CSR }, A_gpu{ Magma_CSR }, B_gpu{ Magma_CSR }, X{ Magma_CSR };
 
     // set up matrix on cpu
     csr_form<T> csr_mat = triplet_mat;
@@ -201,12 +205,11 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
 
     magma_dmtransfer(A_cpu, &A_gpu, Magma_CPU, Magma_DEV, queue);
 
+    // right hand side
     double* l_b;
     magma_dmalloc_cpu(&l_b, in_mat.n_elem);
     for(auto I = 0; I < in_mat.n_elem; ++I) l_b[I] = in_mat[I];
-
     magma_dvset(magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), l_b, &B_cpu, queue);
-
     magma_dmtransfer(B_cpu, &B_gpu, Magma_CPU, Magma_DEV, queue);
 
     magma_dvinit(&X, Magma_DEV, magma_int_t(in_mat.n_rows), magma_int_t(in_mat.n_cols), 0., queue);
@@ -217,7 +220,7 @@ template <typename T> int SparseMat<T>::solve(Mat<T>& out_mat, const Mat<T>& in_
 
     out_mat.resize(in_mat.n_rows, in_mat.n_cols);
 
-    magma_dvget(X, &i, &i, &l_b, queue);
+    magma_dvget(X, l_row_ptr, l_row_ptr, &l_b, queue);
 
     for(auto I = 0; I < in_mat.n_elem; ++I) out_mat[I] = l_b[I];
 
